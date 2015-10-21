@@ -127,8 +127,20 @@ void display() {
     //Autor
     drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92);
     
+    GLUquadricObj *p = gluNewQuadric();
     
+    gluQuadricDrawStyle(p, GLU_FILL);
     
+    glPointSize(5);
+    glColor3f(1.0, 1.0, 0.0);
+    glShadeModel (GL_FLAT);
+    glTranslatef(screenWidth/2, screenHeight - 180, -30.0);
+    glPushMatrix();
+    glRotatef(300.0, 1.0, 0.0, 0.0);
+    glPushMatrix();
+    gluCylinder(p, 75, 50, 60, 20, 8);
+    glPopMatrix();
+    glPopMatrix();
     
     if(gameStatus == WON) {
         glColor3f(0,0,1);
