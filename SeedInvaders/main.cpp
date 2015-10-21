@@ -11,8 +11,8 @@
 
 using namespace std;
 
-int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.8, textZoneHeight = screenHeight * 0.2;
-int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0;
+int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.2;
+int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
 double angle = 0;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
@@ -22,8 +22,8 @@ string minutesStr, secondsStr, milisecondsStr;
 
 void drawTime(string pTimer) {
     glPushMatrix();
-    glTranslatef(screenWidth * 0.1,screenHeight * 0.88, 0.0);
-    glScalef(0.3, -0.3, 0.0);
+    glTranslatef(screenWidth * 0.05,screenHeight * 0.97, 0.0);
+    glScalef(0.2, -0.2, 0.0);
     for (int x = 0; x < pTimer.length(); x++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN , pTimer[x]);
     }
@@ -71,10 +71,10 @@ void myTimer(int i) {
 //    glPopMatrix();
 //}
 //
-void drawText(std::string text,int x,int y) {
+void drawText(std::string text,int x,int y, double size) {
     glPushMatrix();
     glTranslatef(x, y, 0.0);
-    glScalef(0.12, -0.12, 0.0);
+    glScalef(size, -size, 0.0);
     //glScalef(1/screenWidth/0.01, -(1/screenHeight/0.01), 0.0);
     for (int c=0; c < text.length(); c++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN , text[c]);
@@ -90,7 +90,7 @@ void reshape(int w,int h) {
     screenHeight = h;
     screenWidth = w;
     if(screenHeight < 350 || screenWidth < 600) gameZoneHeight = screenHeight;
-    else gameZoneHeight = screenHeight * 0.8;
+    else gameZoneHeight = screenHeight * 0.9;
     glutPostRedisplay();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -111,9 +111,10 @@ void display() {
     //Imprime Timer
     getTime();
     
-    string nivel = to_string(levels/2);
-    drawText("Nivel: " + nivel,screenWidth * 0.3,screenHeight * 0.865);
+    //Game Stats
+    drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels/2) + "  Powerups:",screenWidth * 0.2,screenHeight * 0.97, 0.15);
     
+    /* MOVE TO ANOTHER SCREEN
     //Instrucciones Juego
     drawText("'I' :Iniciar ",screenWidth * 0.1,screenHeight * 0.97);
     drawText("'P' :Pausa",screenWidth * 0.205,screenHeight * 0.97);
@@ -122,21 +123,21 @@ void display() {
     
     //Autor
     drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92);
+    */
     
     //Dibuja Canasta
     GLUquadricObj *p = gluNewQuadric();
-    //glPointSize(5);
     glColor3f(1.0, 1.0, 1.0);
     glShadeModel (GL_FLAT);
     
     glPushMatrix();
-    glTranslatef(screenWidth/2, screenHeight * 0.65, -80.0);
+    glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
     gluQuadricDrawStyle(p, GLU_FILL);
     gluCylinder(p, 28, 17, 63, 14, 4);
     glPopMatrix();
     glPushMatrix();
-    glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
+    glTranslatef(screenWidth/2, screenHeight * 0.85, -80.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
     gluQuadricDrawStyle(p, GLU_FILL);
     gluSphere(p, 21, 14, 4);
@@ -146,7 +147,7 @@ void display() {
         glColor3f(0,0,1);
         glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
         glColor3f(1,1,1);
-        drawText("Felicidades lLegaste al nivel " + to_string(levels/2) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6);
+        drawText("Felicidades llegaste al nivel " + to_string(levels/2) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
     }
     
     //Intercambia los frame buffers
