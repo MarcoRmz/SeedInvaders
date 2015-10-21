@@ -17,7 +17,7 @@
 using namespace std;
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.8, textZoneHeight = screenHeight * 0.2;
-int timer = 0, seconds = 0, minutes = 0, delta = 1, turns = 0;
+int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
 Status gameStatus = STOPPED;
@@ -102,7 +102,7 @@ void reshape(int w,int h) {
 }
 
 void display() {
-
+    
     
     //BKG Color
     glClearColor(0,0,1, 1);
@@ -115,10 +115,10 @@ void display() {
     //Imprime Timer
     getTime();
     
-    string turno = to_string(turns/2);
-    drawText("Turno: " + turno,screenWidth * 0.3,screenHeight * 0.865);
+    string nivel = to_string(levels/2);
+    drawText("Nivel: " + nivel,screenWidth * 0.3,screenHeight * 0.865);
     
-    //Instrucciones
+    //Instrucciones Juego
     drawText("'I' :Iniciar ",screenWidth * 0.1,screenHeight * 0.97);
     drawText("'P' :Pausa",screenWidth * 0.205,screenHeight * 0.97);
     drawText("'R' :Reiniciar",screenWidth * 0.3202,screenHeight * 0.97);
@@ -146,7 +146,7 @@ void display() {
         glColor3f(0,0,1);
         glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
         glColor3f(1,1,1);
-        drawText("You won in " + to_string(turns/2) + " turns and in " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6);
+        drawText("Felicidades lLegaste al nivel " + to_string(levels/2) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6);
     }
     
     //Intercambia los frame buffers
@@ -165,7 +165,7 @@ void onMenu(int opcion) {
             //Reiniciar
         case 2:
             timer = 0;
-            turns = 0;
+            levels = 0;
             gameStatus = STOPPED;
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -183,7 +183,7 @@ void onMenu(int opcion) {
             
             //Ayuda
         case 5:
-            //Display/Hide Card Nums
+            //Display Instructions
             break;
     }
     glutPostRedisplay();
@@ -217,7 +217,7 @@ void myMouse(int button, int state, int x, int y) {
 }
 
 void myMotion(int x, int y){
-
+    
 }
 
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
@@ -247,7 +247,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'r':
             gameStatus = STOPPED;
             timer = 0;
-            turns = 0;
+            levels = 0;
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
             break;
@@ -268,7 +268,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(100,100);
     //Double frame buffer
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE );
-    glutCreateWindow("Memorama");
+    glutCreateWindow("Seed Invaders");
     glutDisplayFunc(display);
     glutIdleFunc(display);
     glutReshapeFunc(reshape);
