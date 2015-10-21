@@ -3,12 +3,7 @@
 //
 
 #include <iostream>
-#ifdef __APPLE__
 #include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #include <cstdlib>
 #include <vector>
 #include <algorithm>
@@ -18,6 +13,7 @@ using namespace std;
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.8, textZoneHeight = screenHeight * 0.2;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0;
+double angle = 0;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
 Status gameStatus = STOPPED;
@@ -57,12 +53,11 @@ void getTime() {
 }
 
 void myTimer(int i) {
-    delta = 1;
     if (gameStatus == 1) {
-        timer += delta;
+        angle += 10;
     }
     glutPostRedisplay();
-    glutTimerFunc(100, myTimer,1);
+    glutTimerFunc(5, myTimer,1);
 }
 
 //void drawCardNum(string text,int x,int y, float size) {
@@ -91,7 +86,7 @@ void reshape(int w,int h) {
     glViewport(0,0,w,h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(0,w,h,0);
+    glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
     screenHeight = h;
     screenWidth = w;
     if(screenHeight < 350 || screenWidth < 600) gameZoneHeight = screenHeight;
@@ -106,12 +101,13 @@ void display() {
     
     //BKG Color
     glClearColor(0,0,1, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
     glColor3f(0.7f, 0.7f, 0.7f);
     glRectf(0,0, screenWidth, gameZoneHeight);
     
+    glColor3f(1, 1, 1);
     //Imprime Timer
     getTime();
     
@@ -127,19 +123,23 @@ void display() {
     //Autor
     drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92);
     
+    //Dibuja Canasta
     GLUquadricObj *p = gluNewQuadric();
-    
-    gluQuadricDrawStyle(p, GLU_FILL);
-    
-    glPointSize(5);
-    glColor3f(1.0, 1.0, 0.0);
+    //glPointSize(5);
+    glColor3f(1.0, 1.0, 1.0);
     glShadeModel (GL_FLAT);
-    glTranslatef(screenWidth/2, screenHeight - 180, -30.0);
+    
     glPushMatrix();
-    glRotatef(300.0, 1.0, 0.0, 0.0);
-    glPushMatrix();
-    gluCylinder(p, 75, 50, 60, 20, 8);
+    glTranslatef(screenWidth/2, screenHeight * 0.65, -80.0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(p, GLU_FILL);
+    gluCylinder(p, 28, 17, 63, 14, 4);
     glPopMatrix();
+    glPushMatrix();
+    glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(p, GLU_FILL);
+    gluSphere(p, 21, 14, 4);
     glPopMatrix();
     
     if(gameStatus == WON) {
@@ -151,6 +151,10 @@ void display() {
     
     //Intercambia los frame buffers
     glutSwapBuffers();//ya tiene integrado el glFlush
+}
+
+void animate() {
+    angle = 0;
 }
 
 void onMenu(int opcion) {
@@ -200,7 +204,7 @@ void crearMenu(void) {
     glutAddMenuEntry("Reiniciar", 2);
     glutAddMenuEntry("Pausa", 3);
     glutAddMenuEntry("Salir", 4);
-    glutAddMenuEntry("Ayuda", 5);
+    //glutAddMenuEntry("Ayuda", 5);
     glutAddSubMenu("Autores", autores);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -216,8 +220,14 @@ void myMouse(int button, int state, int x, int y) {
     }
 }
 
-void myMotion(int x, int y){
-    
+void specialKey(int key, int x, int y) {
+    if (gameStatus == STARTED) {
+        if (key ==  GLUT_KEY_LEFT) {
+            //Move left
+        } else if (key == GLUT_KEY_RIGHT) {
+            //Move Right
+        }
+    }
 }
 
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
@@ -236,7 +246,6 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             gameStatus = PAUSED;
             break;
             
-            //Ayuda
         case 'a':
         case 'A':
             // pending
@@ -264,18 +273,18 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
 int main(int argc, char *argv[]) {
     srand(time(0));
     glutInit(&argc, argv);
-    glutInitWindowSize(720,640);
+    glutInitWindowSize(screenWidth,screenHeight);
     glutInitWindowPosition(100,100);
     //Double frame buffer
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE );
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("Seed Invaders");
     glutDisplayFunc(display);
     glutIdleFunc(display);
     glutReshapeFunc(reshape);
-    glutTimerFunc(100, myTimer,1);
+    glutTimerFunc(5, myTimer,1);
     glutKeyboardFunc(myKeyboard);
+    glutSpecialFunc(specialKey);
     glutMouseFunc(myMouse);
-    glutPassiveMotionFunc(myMotion);
     crearMenu();
     glutMainLoop();
     return EXIT_SUCCESS;
