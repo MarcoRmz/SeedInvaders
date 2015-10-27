@@ -3,12 +3,7 @@
 //
 
 #include <iostream>
-#ifdef __APPLE__
 #include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #include <cstdlib>
 #include <vector>
 #include <algorithm>
@@ -16,8 +11,9 @@
 
 using namespace std;
 
-int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.8, textZoneHeight = screenHeight * 0.2;
-int timer = 0, seconds = 0, minutes = 0, delta = 1, turns = 0;
+int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.2;
+int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
+double angle = 0;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
 Status gameStatus = STOPPED;
@@ -26,8 +22,8 @@ string minutesStr, secondsStr, milisecondsStr;
 
 void drawTime(string pTimer) {
     glPushMatrix();
-    glTranslatef(screenWidth * 0.1,screenHeight * 0.88, 0.0);
-    glScalef(0.3, -0.3, 0.0);
+    glTranslatef(screenWidth * 0.05,screenHeight * 0.97, 0.0);
+    glScalef(0.2, -0.2, 0.0);
     for (int x = 0; x < pTimer.length(); x++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN , pTimer[x]);
     }
@@ -57,12 +53,11 @@ void getTime() {
 }
 
 void myTimer(int i) {
-    delta = 1;
     if (gameStatus == 1) {
-        timer += delta;
+        angle += 10;
     }
     glutPostRedisplay();
-    glutTimerFunc(100, myTimer,1);
+    glutTimerFunc(5, myTimer,1);
 }
 
 //void drawCardNum(string text,int x,int y, float size) {
@@ -76,10 +71,10 @@ void myTimer(int i) {
 //    glPopMatrix();
 //}
 //
-void drawText(std::string text,int x,int y) {
+void drawText(std::string text,int x,int y, double size) {
     glPushMatrix();
     glTranslatef(x, y, 0.0);
-    glScalef(0.12, -0.12, 0.0);
+    glScalef(size, -size, 0.0);
     //glScalef(1/screenWidth/0.01, -(1/screenHeight/0.01), 0.0);
     for (int c=0; c < text.length(); c++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN , text[c]);
@@ -91,34 +86,36 @@ void reshape(int w,int h) {
     glViewport(0,0,w,h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(0,w,h,0);
+    glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
     screenHeight = h;
     screenWidth = w;
     if(screenHeight < 350 || screenWidth < 600) gameZoneHeight = screenHeight;
-    else gameZoneHeight = screenHeight * 0.8;
+    else gameZoneHeight = screenHeight * 0.9;
     glutPostRedisplay();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
 void display() {
-
+    
     
     //BKG Color
     glClearColor(0,0,1, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
     glColor3f(0.75f, 0.75f, 0.75f);
     glRectf(0,0, screenWidth, gameZoneHeight);
     
+    glColor3f(1, 1, 1);
     //Imprime Timer
     getTime();
     
-    string turno = to_string(turns/2);
-    drawText("Turno: " + turno,screenWidth * 0.3,screenHeight * 0.865);
+    //Game Stats
+    drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels/2) + "  Powerups:",screenWidth * 0.2,screenHeight * 0.97, 0.15);
     
-    //Instrucciones
+    /* MOVE TO ANOTHER SCREEN
+    //Instrucciones Juego
     drawText("'I' :Iniciar ",screenWidth * 0.1,screenHeight * 0.97);
     drawText("'P' :Pausa",screenWidth * 0.205,screenHeight * 0.97);
     drawText("'R' :Reiniciar",screenWidth * 0.3202,screenHeight * 0.97);
@@ -126,19 +123,39 @@ void display() {
     
     //Autor
     drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92);
+    */
     
+    //Dibuja Canasta
+    GLUquadricObj *p = gluNewQuadric();
+    glColor3f(1.0, 1.0, 1.0);
+    glShadeModel (GL_FLAT);
     
-    
+    glPushMatrix();
+    glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(p, GLU_FILL);
+    gluCylinder(p, 28, 17, 63, 14, 4);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(screenWidth/2, screenHeight * 0.85, -80.0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(p, GLU_FILL);
+    gluSphere(p, 21, 14, 4);
+    glPopMatrix();
     
     if(gameStatus == WON) {
         glColor3f(0,0,1);
         glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
         glColor3f(1,1,1);
-        drawText("You won in " + to_string(turns/2) + " turns and in " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6);
+        drawText("Felicidades llegaste al nivel " + to_string(levels/2) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
     }
     
     //Intercambia los frame buffers
     glutSwapBuffers();//ya tiene integrado el glFlush
+}
+
+void animate() {
+    angle = 0;
 }
 
 void onMenu(int opcion) {
@@ -153,7 +170,7 @@ void onMenu(int opcion) {
             //Reiniciar
         case 2:
             timer = 0;
-            turns = 0;
+            levels = 0;
             gameStatus = STOPPED;
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -171,7 +188,7 @@ void onMenu(int opcion) {
             
             //Ayuda
         case 5:
-            //Display/Hide Card Nums
+            //Display Instructions
             break;
     }
     glutPostRedisplay();
@@ -188,7 +205,7 @@ void crearMenu(void) {
     glutAddMenuEntry("Reiniciar", 2);
     glutAddMenuEntry("Pausa", 3);
     glutAddMenuEntry("Salir", 4);
-    glutAddMenuEntry("Ayuda", 5);
+    //glutAddMenuEntry("Ayuda", 5);
     glutAddSubMenu("Autores", autores);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -204,8 +221,14 @@ void myMouse(int button, int state, int x, int y) {
     }
 }
 
-void myMotion(int x, int y){
-
+void specialKey(int key, int x, int y) {
+    if (gameStatus == STARTED) {
+        if (key ==  GLUT_KEY_LEFT) {
+            //Move left
+        } else if (key == GLUT_KEY_RIGHT) {
+            //Move Right
+        }
+    }
 }
 
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
@@ -224,7 +247,6 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             gameStatus = PAUSED;
             break;
             
-            //Ayuda
         case 'a':
         case 'A':
             // pending
@@ -235,7 +257,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'r':
             gameStatus = STOPPED;
             timer = 0;
-            turns = 0;
+            levels = 0;
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
             break;
@@ -252,18 +274,18 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
 int main(int argc, char *argv[]) {
     srand(time(0));
     glutInit(&argc, argv);
-    glutInitWindowSize(720,640);
+    glutInitWindowSize(screenWidth,screenHeight);
     glutInitWindowPosition(100,100);
     //Double frame buffer
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE );
-    glutCreateWindow("Memorama");
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glutCreateWindow("Seed Invaders");
     glutDisplayFunc(display);
     glutIdleFunc(display);
     glutReshapeFunc(reshape);
-    glutTimerFunc(100, myTimer,1);
+    glutTimerFunc(5, myTimer,1);
     glutKeyboardFunc(myKeyboard);
+    glutSpecialFunc(specialKey);
     glutMouseFunc(myMouse);
-    glutPassiveMotionFunc(myMotion);
     crearMenu();
     glutMainLoop();
     return EXIT_SUCCESS;
