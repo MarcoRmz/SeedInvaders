@@ -109,7 +109,7 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
     
-    glColor3f(0.7f, 0.7f, 0.7f);
+    glColor3f(0.75f, 0.75f, 0.75f);
     glRectf(0,0, screenWidth, gameZoneHeight);
     
     //Imprime Timer
