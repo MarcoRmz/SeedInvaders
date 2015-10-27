@@ -13,7 +13,7 @@ using namespace std;
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
-double angle = 0;
+double angle = 0, invaderHeight = 0;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
 Status gameStatus = STOPPED;
@@ -55,6 +55,10 @@ void getTime() {
 void myTimer(int i) {
     if (gameStatus == 1) {
         angle += 10;
+        invaderHeight += 2;
+        if (invaderHeight >= textZoneHeight-65) {
+            invaderHeight = 0;
+        }
     }
     glutPostRedisplay();
     glutTimerFunc(5, myTimer,1);
@@ -98,7 +102,6 @@ void reshape(int w,int h) {
 
 void display() {
     
-    
     //BKG Color
     glClearColor(0.75, 0.75, 0.75,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,22 +128,46 @@ void display() {
     drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92);
     */
     
+    //Dibuja Invader
+    GLUquadricObj *invader = gluNewQuadric();
+    glColor3f(0.05, 0.67, 0.87);
+    glShadeModel (GL_FLAT);
+    
+    glPushMatrix();
+    glTranslatef(screenWidth/2, invaderHeight, -80);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(invader, GLU_FILL);
+    gluCylinder(invader, 7, 4, 20, 8, 4);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(screenWidth/2, invaderHeight + 15, -80.0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(invader, GLU_FILL);
+    gluCylinder(invader, 4, 7, 30, 8, 4);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(screenWidth/2, invaderHeight + 50, -80.0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(invader, GLU_FILL);
+    gluSphere(invader, 10, 5, 4);
+    glPopMatrix();
+    
     //Dibuja Canasta
-    GLUquadricObj *p = gluNewQuadric();
+    GLUquadricObj *hero = gluNewQuadric();
     glColor3f(1.0, 1.0, 1.0);
     glShadeModel (GL_FLAT);
     
     glPushMatrix();
     glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(p, GLU_FILL);
-    gluCylinder(p, 28, 17, 63, 14, 4);
+    gluQuadricDrawStyle(hero, GLU_FILL);
+    gluCylinder(hero, 28, 17, 63, 14, 4);
     glPopMatrix();
     glPushMatrix();
     glTranslatef(screenWidth/2, screenHeight * 0.85, -80.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(p, GLU_FILL);
-    gluSphere(p, 21, 14, 4);
+    gluQuadricDrawStyle(hero, GLU_FILL);
+    gluSphere(hero, 21, 14, 4);
     glPopMatrix();
     
     if(gameStatus == WON) {
