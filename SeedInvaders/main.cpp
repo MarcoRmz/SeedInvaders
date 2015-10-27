@@ -11,7 +11,7 @@
 
 using namespace std;
 
-int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.2;
+int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
 double angle = 0;
 double playerPositionX = screenWidth/2.0;
@@ -103,12 +103,12 @@ void display() {
     
     
     //BKG Color
-    glClearColor(0,0,1, 1);
+    glClearColor(0.75, 0.75, 0.75,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
-    glColor3f(0.75f, 0.75f, 0.75f);
-    glRectf(0,0, screenWidth, gameZoneHeight);
+    glColor3f(0, 0, 1);
+    glRectf(0,textZoneHeight, screenWidth, screenHeight);
     
     glColor3f(1, 1, 1);
     //Imprime Timer
