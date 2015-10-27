@@ -14,6 +14,8 @@ using namespace std;
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.2;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
 double angle = 0;
+double playerPositionX = screenWidth/2.0;
+bool playerLeft = false, playerRight = false;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
 Status gameStatus = STOPPED;
@@ -49,14 +51,15 @@ void getTime() {
     }
     
     //Manda imprimir el tiempo
+    cout << secondsStr << endl;
     drawTime(minutesStr + ":" + secondsStr + "." + milisecondsStr);
 }
 
 void myTimer(int i) {
-    if (gameStatus == 1) {
+    if (gameStatus == STARTED) {
         angle += 10;
+        glutPostRedisplay();
     }
-    glutPostRedisplay();
     glutTimerFunc(5, myTimer,1);
 }
 
@@ -125,19 +128,22 @@ void display() {
     drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92);
     */
     
+    if(playerLeft && playerPositionX > 0) playerPositionX-= 10;
+    if(playerRight && playerPositionX < screenWidth) playerPositionX+= 10;
+    
     //Dibuja Canasta
     GLUquadricObj *p = gluNewQuadric();
     glColor3f(1.0, 1.0, 1.0);
     glShadeModel (GL_FLAT);
     
     glPushMatrix();
-    glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
+    glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(p, GLU_FILL);
+    gluQuadricDrawStyle(p, GLU_LINE);
     gluCylinder(p, 28, 17, 63, 14, 4);
     glPopMatrix();
     glPushMatrix();
-    glTranslatef(screenWidth/2, screenHeight * 0.85, -80.0);
+    glTranslatef(playerPositionX, screenHeight * 0.85, -50.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
     gluQuadricDrawStyle(p, GLU_FILL);
     gluSphere(p, 21, 14, 4);
@@ -231,6 +237,8 @@ void specialKey(int key, int x, int y) {
     }
 }
 
+
+
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
     switch (theKey) {
             //Inicio
@@ -249,7 +257,16 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             
         case 'a':
         case 'A':
-            // pending
+            if(gameStatus == STARTED){
+                playerLeft = true;
+            }
+            break;
+            
+        case 'd':
+        case 'D':
+            if(gameStatus == STARTED){
+                playerRight = true;
+            }
             break;
             
             //Reset
@@ -270,6 +287,24 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
     }
 }
 
+void myKeyboardUp(unsigned char theKey, int mouseX, int mouseY) {
+    switch (theKey) {
+
+        case 'a':
+        case 'A':
+            playerLeft = false;
+            break;
+            
+        case 'd':
+        case 'D':
+            playerRight = false;
+            break;
+
+        default:
+            break;
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     srand(time(0));
@@ -284,6 +319,8 @@ int main(int argc, char *argv[]) {
     glutReshapeFunc(reshape);
     glutTimerFunc(5, myTimer,1);
     glutKeyboardFunc(myKeyboard);
+    glutKeyboardUpFunc(myKeyboardUp);
+
     glutSpecialFunc(specialKey);
     glutMouseFunc(myMouse);
     crearMenu();
