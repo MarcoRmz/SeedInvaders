@@ -100,7 +100,7 @@ void display() {
     
     
     //BKG Color
-    glClearColor(0.7, 0.7, 0.7,1);
+    glClearColor(0.75, 0.75, 0.75,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
