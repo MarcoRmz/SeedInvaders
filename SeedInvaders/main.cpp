@@ -57,10 +57,10 @@ void getTime() {
 
 void myTimer(int i) {
     if (gameStatus == STARTED) {
-        angle += 10;
+        timer += 1;
         glutPostRedisplay();
     }
-    glutTimerFunc(5, myTimer,1);
+    glutTimerFunc(100, myTimer,1);
 }
 
 //void drawCardNum(string text,int x,int y, float size) {
@@ -178,6 +178,7 @@ void onMenu(int opcion) {
             timer = 0;
             levels = 0;
             gameStatus = STOPPED;
+            playerPositionX = screenWidth/2.0;
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
             break;
@@ -275,6 +276,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             gameStatus = STOPPED;
             timer = 0;
             levels = 0;
+            playerPositionX = screenWidth/2.0;
+            lives = 3;
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
             break;
