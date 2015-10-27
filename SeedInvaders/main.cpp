@@ -13,7 +13,9 @@ using namespace std;
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
-double angle = 0, invaderHeight = 0;
+double invaderHeight = 0;
+double playerPositionX = screenWidth/2.0;
+bool playerLeft = false, playerRight = false;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED };
 Status gameStatus = STOPPED;
@@ -49,18 +51,18 @@ void getTime() {
     }
     
     //Manda imprimir el tiempo
+    cout << secondsStr << endl;
     drawTime(minutesStr + ":" + secondsStr + "." + milisecondsStr);
 }
 
 void myTimer(int i) {
-    if (gameStatus == 1) {
-        angle += 10;
+    if (gameStatus == STARTED) {
         invaderHeight += 2;
         if (invaderHeight >= textZoneHeight-65) {
             invaderHeight = 0;
         }
+        glutPostRedisplay();
     }
-    glutPostRedisplay();
     glutTimerFunc(5, myTimer,1);
 }
 
@@ -151,6 +153,9 @@ void display() {
     gluQuadricDrawStyle(invader, GLU_FILL);
     gluSphere(invader, 10, 5, 4);
     glPopMatrix();
+
+    if(playerLeft && playerPositionX > 0) playerPositionX-= 10;
+    if(playerRight && playerPositionX < screenWidth) playerPositionX+= 10;
     
     //Dibuja Canasta
     GLUquadricObj *hero = gluNewQuadric();
@@ -158,13 +163,13 @@ void display() {
     glShadeModel (GL_FLAT);
     
     glPushMatrix();
-    glTranslatef(screenWidth/2, screenHeight * 0.75, -80.0);
+    glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(hero, GLU_FILL);
+    gluQuadricDrawStyle(hero, GLU_LINE);
     gluCylinder(hero, 28, 17, 63, 14, 4);
     glPopMatrix();
     glPushMatrix();
-    glTranslatef(screenWidth/2, screenHeight * 0.85, -80.0);
+    glTranslatef(playerPositionX, screenHeight * 0.85, -50.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
     gluQuadricDrawStyle(hero, GLU_FILL);
     gluSphere(hero, 21, 14, 4);
@@ -179,10 +184,6 @@ void display() {
     
     //Intercambia los frame buffers
     glutSwapBuffers();//ya tiene integrado el glFlush
-}
-
-void animate() {
-    angle = 0;
 }
 
 void onMenu(int opcion) {
@@ -258,6 +259,8 @@ void specialKey(int key, int x, int y) {
     }
 }
 
+
+
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
     switch (theKey) {
             //Inicio
@@ -276,7 +279,16 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             
         case 'a':
         case 'A':
-            // pending
+            if(gameStatus == STARTED){
+                playerLeft = true;
+            }
+            break;
+            
+        case 'd':
+        case 'D':
+            if(gameStatus == STARTED){
+                playerRight = true;
+            }
             break;
             
             //Reset
@@ -297,6 +309,24 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
     }
 }
 
+void myKeyboardUp(unsigned char theKey, int mouseX, int mouseY) {
+    switch (theKey) {
+
+        case 'a':
+        case 'A':
+            playerLeft = false;
+            break;
+            
+        case 'd':
+        case 'D':
+            playerRight = false;
+            break;
+
+        default:
+            break;
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     srand(time(0));
@@ -311,6 +341,8 @@ int main(int argc, char *argv[]) {
     glutReshapeFunc(reshape);
     glutTimerFunc(5, myTimer,1);
     glutKeyboardFunc(myKeyboard);
+    glutKeyboardUpFunc(myKeyboardUp);
+
     glutSpecialFunc(specialKey);
     glutMouseFunc(myMouse);
     crearMenu();
