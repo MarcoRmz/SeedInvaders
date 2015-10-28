@@ -68,7 +68,7 @@ void myTimer(int i) {
         if(timerMS % 20 == 0) timer += 1;
         timerMS += 5;
         glutPostRedisplay();
-        cout << timerMS << endl;
+        //cout << timerMS << endl;
     }
     
     glutTimerFunc(5, myTimer,1);
