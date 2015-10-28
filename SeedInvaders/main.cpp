@@ -13,7 +13,7 @@ using namespace std;
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
-double invaderHeight = 0;
+double invaderHeight = 0, angle = 0;
 double playerPositionX = screenWidth/2.0;
 bool playerLeft = false, playerRight = false;
 
@@ -60,6 +60,10 @@ void myTimer(int i) {
         invaderHeight += 5;
         if (invaderHeight >= textZoneHeight-65) {
             invaderHeight = 0;
+        }
+        angle += 10;
+        if (angle >= 360) {
+            angle = 0;
         }
         timer += 1;
         glutPostRedisplay();
@@ -137,22 +141,26 @@ void display() {
     glShadeModel (GL_FLAT);
     
     glPushMatrix();
-    glTranslatef(screenWidth/2, invaderHeight, -80);
-    glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(invader, GLU_FILL);
-    gluCylinder(invader, 7, 4, 20, 8, 4);
+    //Invader Rotation
+    //glRotatef(angle, 0.0, 1.0, 0.0);
+    glPushMatrix();
+    glTranslatef((screenWidth/2)-3.5, invaderHeight, -50.0);
+    glRotatef(260.0, 1.0, -0.2, 0.0);
+    gluQuadricDrawStyle(invader, GLU_LINE);
+    gluCylinder(invader, 1, 4, 20, 8, 4);
     glPopMatrix();
     glPushMatrix();
-    glTranslatef(screenWidth/2, invaderHeight + 15, -80.0);
-    glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(invader, GLU_FILL);
+    glTranslatef(screenWidth/2, invaderHeight + 15, -50.0);
+    glRotatef(260.0, 1.0, 0.1, 0.0);
+    gluQuadricDrawStyle(invader, GLU_LINE);
     gluCylinder(invader, 4, 7, 30, 8, 4);
     glPopMatrix();
     glPushMatrix();
-    glTranslatef(screenWidth/2, invaderHeight + 50, -80.0);
+    glTranslatef((screenWidth/2)-3, invaderHeight + 50, -50.0);
     glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(invader, GLU_FILL);
+    gluQuadricDrawStyle(invader, GLU_LINE);
     gluSphere(invader, 10, 5, 4);
+    glPopMatrix();
     glPopMatrix();
 
     if(playerLeft && playerPositionX > 0) playerPositionX-= 10;
