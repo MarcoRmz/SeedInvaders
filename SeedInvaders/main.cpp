@@ -13,6 +13,7 @@ using namespace std;
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
+long long timerMS = 0;
 double invaderHeight = 0;
 double playerPositionX = screenWidth/2.0;
 bool playerLeft = false, playerRight = false;
@@ -51,7 +52,6 @@ void getTime() {
     }
     
     //Manda imprimir el tiempo
-    cout << secondsStr << endl;
     drawTime(minutesStr + ":" + secondsStr + "." + milisecondsStr);
 }
 
@@ -61,10 +61,13 @@ void myTimer(int i) {
         if (invaderHeight >= textZoneHeight-65) {
             invaderHeight = 0;
         }
-        timer += 1;
+        if(timerMS % 20 == 0) timer += 1;
+        timerMS += 5;
         glutPostRedisplay();
+        cout << timerMS << endl;
     }
-    glutTimerFunc(100, myTimer,1);
+    
+    glutTimerFunc(5, myTimer,1);
 }
 
 //void drawCardNum(string text,int x,int y, float size) {
