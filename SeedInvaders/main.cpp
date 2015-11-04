@@ -214,14 +214,29 @@ void display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         //Keys
-        glColor3f(1,1,1);
+        glColor3f(0,0,1);
         drawText("Instrucciones",screenWidth * 0.32,screenHeight * 0.1, 0.35);
-        drawText("Iniciar: 'I'",screenWidth * 0.05,screenHeight * 0.2, 0.2);
-        drawText("Pausa: 'P'",screenWidth * 0.05,screenHeight * 0.25, 0.2);
-        drawText("Reiniciar: 'R'",screenWidth * 0.05,screenHeight * 0.3, 0.2);
-        drawText("Ayuda: 'H'",screenWidth * 0.05,screenHeight * 0.35, 0.2);
-        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.4, 0.2);
-        drawText("Boton Derecho del mouse mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.45, 0.1);
+        drawText("Keys:",screenWidth * 0.05,screenHeight * 0.2, 0.25);
+        glColor3f(1,1,1);
+        drawText("Iniciar: 'I'",screenWidth * 0.05,screenHeight * 0.25, 0.2);
+        drawText("Pausa: 'P'",screenWidth * 0.05,screenHeight * 0.3, 0.2);
+        drawText("Reiniciar: 'R'",screenWidth * 0.05,screenHeight * 0.35, 0.2);
+        drawText("Ayuda: 'H'",screenWidth * 0.05,screenHeight * 0.4, 0.2);
+        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.45, 0.2);
+        drawText("Boton Derecho del mouse",screenWidth * 0.05,screenHeight * 0.5, 0.1);
+        drawText("mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.53, 0.1);
+        
+        //Game Goal
+        glColor3f(0,0,1);
+        drawText("Game Goal:",screenWidth * 0.4,screenHeight * 0.2, 0.25);
+        glColor3f(1,1,1);
+        drawText("LoremIpsum........",screenWidth * 0.4,screenHeight * 0.25, 0.2);
+        
+        //Game Powerups
+        glColor3f(0,0,1);
+        drawText("Powerups:",screenWidth * 0.4,screenHeight * 0.35, 0.25);
+        glColor3f(1,1,1);
+        drawText("<3 = Extra Lives",screenWidth * 0.4,screenHeight * 0.4, 0.2);
         
         //Autors
         drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.97, 0.12);
