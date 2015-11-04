@@ -188,13 +188,13 @@ void display() {
         glColor3f(1,1,1);
         glRectf(screenWidth * 0.37, screenHeight * 0.57,screenWidth * 0.61, screenHeight * 0.65);
         glColor3f(0,0,1);
-        drawText("Ayuda (A)", (screenWidth/2) - 85, screenHeight * 0.63, 0.25);
+        drawText("Ayuda (H)", (screenWidth/2) - 85, screenHeight * 0.63, 0.25);
     } else if (gameStatus == PAUSED) {
         //Display Game Paused
         glColor3f(0,0,1);
-        glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.55, screenHeight * 0.55);
+        glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         glColor3f(1,1,1);
-        drawText("Pausa", screenWidth * 0.3, screenHeight * 0.6, 0.12);
+        drawText("Pausa", (screenWidth/2) - 50, screenHeight * 0.5, 0.25);
     } else if (gameStatus == WON) {
         //Display Game Won
         glColor3f(0,0,1);
@@ -209,13 +209,22 @@ void display() {
         drawText("Perdiste llegaste al nivel " + to_string(levels/2) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
     } else if (gameStatus == INSTRUCTIONS) {
         //Display Game Instructions
-        drawText("'I' :Iniciar ",screenWidth * 0.1,screenHeight * 0.97, 0.12);
-        drawText("'P' :Pausa",screenWidth * 0.205,screenHeight * 0.97, 0.12);
-        drawText("'R' :Reiniciar",screenWidth * 0.3202,screenHeight * 0.97, 0.12);
-        drawText("'Esc' :Salir",screenWidth * 0.4601,screenHeight * 0.97, 0.12);
+        //BKG Color
+        glClearColor(0, 0, 0,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        //Autor
-        drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.92, 0.12);
+        //Keys
+        glColor3f(1,1,1);
+        drawText("Instrucciones",screenWidth * 0.32,screenHeight * 0.1, 0.35);
+        drawText("Iniciar: 'I'",screenWidth * 0.05,screenHeight * 0.2, 0.2);
+        drawText("Pausa: 'P'",screenWidth * 0.05,screenHeight * 0.25, 0.2);
+        drawText("Reiniciar: 'R'",screenWidth * 0.05,screenHeight * 0.3, 0.2);
+        drawText("Ayuda: 'H'",screenWidth * 0.05,screenHeight * 0.35, 0.2);
+        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.4, 0.2);
+        drawText("Boton Derecho del mouse mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.45, 0.1);
+        
+        //Autors
+        drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.97, 0.12);
     }
     
     //Intercambia los frame buffers
@@ -229,6 +238,8 @@ void onMenu(int opcion) {
             if(gameStatus != STARTED){
                 gameStatus = STARTED;
             }
+            glClear( GL_COLOR_BUFFER_BIT );
+            glFlush();// Limpia la pantalla
             break;
             
             //Reiniciar
@@ -250,6 +261,8 @@ void onMenu(int opcion) {
             } else if (gameStatus == PAUSED) {
                 gameStatus = STARTED;
             }
+            glClear( GL_COLOR_BUFFER_BIT );
+            glFlush();// Limpia la pantalla
             break;
             
             //Salir
@@ -260,11 +273,13 @@ void onMenu(int opcion) {
             //Ayuda
         case 5:
             //Display Instructions
-            if(gameStatus != STARTED || gameStatus != PAUSED){
-                gameStatus = INSTRUCTIONS;
-            } else if (gameStatus == INSTRUCTIONS) {
+            if (gameStatus == INSTRUCTIONS) {
                 gameStatus = STOPPED;
+            } else if(gameStatus != STARTED && gameStatus != PAUSED){
+                gameStatus = INSTRUCTIONS;
             }
+            glClear( GL_COLOR_BUFFER_BIT );
+            glFlush();// Limpia la pantalla
             break;
     }
     glutPostRedisplay();
