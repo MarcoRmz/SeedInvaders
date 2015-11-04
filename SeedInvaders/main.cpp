@@ -264,6 +264,7 @@ void onMenu(int opcion) {
                 levels = 0;
                 gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
+                invaderHeight = 0;
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
             }
@@ -403,6 +404,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 levels = 0;
                 gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
+                invaderHeight = 0;
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
             }
