@@ -11,9 +11,18 @@
 
 using namespace std;
 
+struct Invader {
+    double invaderX;
+    double invaderHeight;
+    Invader(int x, int y) : invaderX(x), invaderHeight(y) {}
+};
+
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
-double invaderHeight = 0, angle = 0;
+double angle = 0;
+double enemyInterval = 300.0, enemySpawnrate = 300.0;
+vector<Invader> invaders;
+
 long long timerMS = 0;
 double playerPositionX = screenWidth/2.0;
 bool playerLeft = false, playerRight = false;
@@ -57,10 +66,21 @@ void getTime() {
 
 void myTimer(int i) {
     if (gameStatus == STARTED) {
-        invaderHeight += 5;
-        if (invaderHeight >= textZoneHeight-65) {
-            invaderHeight = 0;
+        enemyInterval -= 5;
+        if(seconds % 15 == 0 && enemySpawnrate > 20.0) enemySpawnrate -= 1.0;
+        // cout << "Enemy INTERVAL: " << enemyInterval << endl;
+        // ENEMY CREATION
+        if(enemyInterval <= 0) {
+            invaders.push_back(Invader(rand() % screenWidth - 20 + 20, 0));
+            enemyInterval = enemySpawnrate;
         }
+        for(int i = 0; i < invaders.size(); i++){
+            invaders[i].invaderHeight += 5;
+            if (invaders[i].invaderHeight >= textZoneHeight-65) {
+                invaders.erase(invaders.begin()+i);
+            }
+        }
+        
         angle += 10;
         if (angle >= 360) {
             angle = 0;
@@ -125,24 +145,26 @@ void display() {
         glPushMatrix();
         //Invader Rotation
         //glRotatef(angle, 0.0, 1.0, 0.0);
-        glPushMatrix();
-        glTranslatef((screenWidth/2)-3.5, invaderHeight, -50.0);
-        glRotatef(260.0, 1.0, -0.2, 0.0);
-        gluQuadricDrawStyle(invader, GLU_LINE);
-        gluCylinder(invader, 1, 4, 20, 8, 4);
-        glPopMatrix();
-        glPushMatrix();
-        glTranslatef(screenWidth/2, invaderHeight + 15, -50.0);
-        glRotatef(260.0, 1.0, 0.1, 0.0);
-        gluQuadricDrawStyle(invader, GLU_LINE);
-        gluCylinder(invader, 4, 7, 30, 8, 4);
-        glPopMatrix();
-        glPushMatrix();
-        glTranslatef((screenWidth/2)-3, invaderHeight + 50, -50.0);
-        glRotatef(260.0, 1.0, 0.0, 0.0);
-        gluQuadricDrawStyle(invader, GLU_LINE);
-        gluSphere(invader, 10, 5, 4);
-        glPopMatrix();
+        for(int i = 0; i < invaders.size(); i++){
+            glPushMatrix();
+            glTranslatef(invaders[i].invaderX-3.5, invaders[i].invaderHeight, -50.0);
+            glRotatef(260.0, 1.0, -0.2, 0.0);
+            gluQuadricDrawStyle(invader, GLU_LINE);
+            gluCylinder(invader, 1, 4, 20, 8, 4);
+            glPopMatrix();
+            glPushMatrix();
+            glTranslatef(invaders[i].invaderX, invaders[i].invaderHeight + 15, -50.0);
+            glRotatef(260.0, 1.0, 0.1, 0.0);
+            gluQuadricDrawStyle(invader, GLU_LINE);
+            gluCylinder(invader, 4, 7, 30, 8, 4);
+            glPopMatrix();
+            glPushMatrix();
+            glTranslatef(invaders[i].invaderX-3, invaders[i].invaderHeight + 50, -50.0);
+            glRotatef(260.0, 1.0, 0.0, 0.0);
+            gluQuadricDrawStyle(invader, GLU_LINE);
+            gluSphere(invader, 10, 5, 4);
+            glPopMatrix();
+        }
         glPopMatrix();
         
         if(playerLeft && playerPositionX > 0) playerPositionX-= 10;
@@ -264,7 +286,9 @@ void onMenu(int opcion) {
                 levels = 0;
                 gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
-                invaderHeight = 0;
+                invaders.clear();
+                enemyInterval = enemySpawnrate;
+                
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
             }
@@ -404,7 +428,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 levels = 0;
                 gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
-                invaderHeight = 0;
+                invaders.clear();
+                enemyInterval = enemySpawnrate;
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
             }
