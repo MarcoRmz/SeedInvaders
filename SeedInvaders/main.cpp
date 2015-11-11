@@ -32,6 +32,31 @@ Status gameStatus = STOPPED;
 
 string minutesStr, secondsStr, milisecondsStr;
 
+void  initLight(void) {
+    // Light
+    /*
+    GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat position[4] ={8.0, 9.0, 5.0, 1.0};
+    
+    GLfloat lmodel_ambient[4] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat local_view[1] ={0.0};
+    
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
+    
+    glFrontFace(GL_CW);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_AUTO_NORMAL);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS); */
+}
+
 void drawTime(string pTimer) {
     glPushMatrix();
     glTranslatef(screenWidth * 0.05,screenHeight * 0.97, 0.0);
@@ -126,6 +151,8 @@ void display() {
     glLoadIdentity();
     
     if (gameStatus == STARTED) {
+        float mat[4];
+        
         //Display Game Screen
         glColor3f(0, 0, 1);
         glRectf(0,textZoneHeight, screenWidth, screenHeight);
@@ -176,9 +203,25 @@ void display() {
         glShadeModel (GL_FLAT);
         
         glPushMatrix();
+        //Material
+        mat[0] = 0.25;
+        mat[1] = 0.25;
+        mat[2] = 0.25;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.774597;
+        mat[1] = 0.774597;
+        mat[2] = 0.774597;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, 0.6 * 128.0);
+        
         glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
         glRotatef(260.0, 1.0, 0.0, 0.0);
-        gluQuadricDrawStyle(hero, GLU_LINE);
+        gluQuadricDrawStyle(hero, GLU_FILL);
         gluCylinder(hero, 28, 17, 63, 14, 4);
         glPopMatrix();
         glPushMatrix();
@@ -480,6 +523,7 @@ int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
     glutInitWindowSize(screenWidth,screenHeight);
     glutInitWindowPosition(100,100);
+    initLight();
     //Double frame buffer
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("Seed Invaders");
