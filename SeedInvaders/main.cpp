@@ -62,7 +62,7 @@ void  initLight(void) {
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS); */
+    glDepthFunc(GL_LESS);*/
 }
 
 void drawTime(string pTimer) {
@@ -262,6 +262,8 @@ void display() {
         glShadeModel (GL_FLAT);
         
         glPushMatrix();
+        glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
         //Material
         mat[0] = 0.25;
         mat[1] = 0.25;
@@ -277,12 +279,10 @@ void display() {
         mat[2] = 0.774597;
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
         glMaterialf(GL_FRONT, GL_SHININESS, 0.6 * 128.0);
-        
-        glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
-        glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(hero, GLU_FILL);
         gluCylinder(hero, 28, 17, 63, 14, 4);
         glPopMatrix();
+        
         glPushMatrix();
         glTranslatef(playerPositionX, screenHeight * 0.85, -50.0);
         glRotatef(260.0, 1.0, 0.0, 0.0);
@@ -586,12 +586,12 @@ int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
     glutInitWindowSize(screenWidth,screenHeight);
     glutInitWindowPosition(100,100);
-    initLight();
     //Double frame buffer
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("Seed Invaders");
     glutDisplayFunc(display);
     glutIdleFunc(display);
+    initLight();
     glutReshapeFunc(reshape);
     glutTimerFunc(5, myTimer,1);
     glutKeyboardFunc(myKeyboard);
