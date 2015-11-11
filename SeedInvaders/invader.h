@@ -70,7 +70,6 @@ class Invader {
         glColor3f(rgb.r, rgb.g, rgb.b);
         glShadeModel (GL_FLAT);
         //Invader Rotation
-        //glRotatef(angle, 0.0, 1.0, 0.0);
         
         double scale = 1.0;
         switch (type) {
@@ -86,17 +85,21 @@ class Invader {
         
         glPushMatrix();
         if(type!=10){
+
+
             glTranslatef(invaderX-3.5*scale, invaderHeight, -50.0);
+            glRotatef(angle, 0.0, -0.99, 0.0);
             glRotatef(260.0, 1.0, -0.2, 0.0);
             gluQuadricDrawStyle(invader, GLU_LINE);
             gluCylinder(invader, 1*scale, 4*scale, 20*scale, 8*scale, 4*scale);
-
+            
             glPopMatrix();
             glPushMatrix();
-            glTranslatef(invaderX, invaderHeight + 15*scale, -50.0);
-            glRotatef(260.0, 1.0, 0.1, 0.0);
+            glTranslatef(invaderX-3.5, invaderHeight + 45*scale, -50.0);
+            glRotatef(-angle-10, 0.0, 0.9, 0.0);
+            glRotatef(-260.0, 1.0, 0.1, 0.0);
             gluQuadricDrawStyle(invader, GLU_LINE);
-            gluCylinder(invader, 4*scale, 7*scale, 30*scale, 8*scale, 4*scale);
+            gluCylinder(invader, 7*scale, 4*scale, 25*scale, 8*scale, 4*scale);
             glPopMatrix();
             glPushMatrix();
         

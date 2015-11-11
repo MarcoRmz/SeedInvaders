@@ -114,7 +114,7 @@ void myTimer(int i) {
         if(!spawnrateCheck && seconds % 5 != 0) spawnrateCheck = true;
         if(!speedCheck && seconds % 15 != 0) speedCheck = true;
         if(spawnrateCheck && seconds % 5 == 0 && enemySpawnrate > 20.0) {
-            enemySpawnrate -= 10.0;
+            enemySpawnrate -= 20.0;
             spawnrateCheck = false;
             cout << "LOWERED SPAWNRATE" << endl;
         }
@@ -152,7 +152,7 @@ void myTimer(int i) {
             }
         }
         
-        angle += 10;
+        angle += 30;
         if (angle >= 360) {
             angle = 0;
         }
