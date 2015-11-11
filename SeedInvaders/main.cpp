@@ -111,7 +111,7 @@ void myTimer(int i) {
         if(enemyInterval <= 0) {
             invaders.push_back(Invader(rand() % (screenWidth - 20) + 20,
                                        0,
-                                        fRand(2.0, maxSpeed)));
+                                       fRand(2.0, maxSpeed)));
             enemyInterval = enemySpawnrate;
         }
         for(int i = 0; i < invaders.size(); i++){
