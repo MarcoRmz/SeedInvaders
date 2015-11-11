@@ -8,20 +8,28 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <utility>
 
 using namespace std;
 
 struct Invader {
     double invaderX;
     double invaderHeight;
-    Invader(int x, int y) : invaderX(x), invaderHeight(y) {}
+    int type; // 0 == invader
+    double speed;
+    int time;
+    Invader(int x, int type, double speed) : invaderX(x), invaderHeight(0), type(type), speed(speed), time(50) {}
 };
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
 double angle = 0;
 double enemyInterval = 300.0, enemySpawnrate = 300.0;
+double maxSpeed = 4.0;
+bool speedCheck = false, spawnrateCheck = false;
 vector<Invader> invaders;
+vector<Invader> kills;
+vector<Invader> hits;
 
 long long timerMS = 0;
 double playerPositionX = screenWidth/2.0;
@@ -89,20 +97,64 @@ void getTime() {
     drawTime(minutesStr + ":" + secondsStr + "." + milisecondsStr);
 }
 
+double fRand(double fMin, double fMax)
+{
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
+
+void drawText(std::string text,int x,int y, double size) {
+    glPushMatrix();
+    glTranslatef(x, y, 0.0);
+    glScalef(size, -size, 0.0);
+    for (int c=0; c < text.length(); c++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN , text[c]);
+    }
+    glPopMatrix();
+}
+
 void myTimer(int i) {
     if (gameStatus == STARTED) {
         enemyInterval -= 5;
-        if(seconds % 15 == 0 && enemySpawnrate > 20.0) enemySpawnrate -= 1.0;
+        
+        // Acceleration changes
+        if(!spawnrateCheck && seconds % 5 != 0) spawnrateCheck = true;
+        if(!speedCheck && seconds % 15 != 0) speedCheck = true;
+        if(spawnrateCheck && seconds % 5 == 0 && enemySpawnrate > 20.0) {
+            enemySpawnrate -= 10.0;
+            spawnrateCheck = false;
+            cout << "LOWERED SPAWNRATE" << endl;
+        }
+        if(speedCheck && seconds % 15 == 0 && maxSpeed <= 10) {
+            maxSpeed+= 0.5;
+            speedCheck = false;
+            cout << "INCREASED SPEED" << endl;
+        }
+        
         // cout << "Enemy INTERVAL: " << enemyInterval << endl;
         // ENEMY CREATION
         if(enemyInterval <= 0) {
-            invaders.push_back(Invader(rand() % screenWidth - 20 + 20, 0));
+            invaders.push_back(Invader(rand() % (screenWidth - 20) + 20,
+                                       0,
+                                        fRand(2.0, maxSpeed)));
             enemyInterval = enemySpawnrate;
         }
         for(int i = 0; i < invaders.size(); i++){
-            invaders[i].invaderHeight += 5;
-            if (invaders[i].invaderHeight >= textZoneHeight-65) {
+            invaders[i].invaderHeight += invaders[i].speed;
+            
+            // KILL INVADER
+            if(invaders[i].invaderHeight >= textZoneHeight-150 && playerPositionX-35 <= invaders[i].invaderX && invaders[i].invaderX <= playerPositionX+35){
+                kills.push_back(invaders[i]);
                 invaders.erase(invaders.begin()+i);
+                score += 10;
+
+            }
+            
+            // HIT PLAYER
+            if (invaders[i].invaderHeight >= textZoneHeight-65) {
+                hits.push_back(invaders[i]);
+                invaders.erase(invaders.begin()+i);
+                lives--;
             }
         }
         
@@ -117,16 +169,6 @@ void myTimer(int i) {
     }
     
     glutTimerFunc(5, myTimer,1);
-}
-
-void drawText(std::string text,int x,int y, double size) {
-    glPushMatrix();
-    glTranslatef(x, y, 0.0);
-    glScalef(size, -size, 0.0);
-    for (int c=0; c < text.length(); c++) {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN , text[c]);
-    }
-    glPopMatrix();
 }
 
 void reshape(int w,int h) {
@@ -164,11 +206,29 @@ void display() {
         //Game Stats
         drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels/2) + "  Powerups:",screenWidth * 0.2,screenHeight * 0.97, 0.15);
         
+        
+        
+        // DRAW KILLS
+        glColor3f(1, 1, 0);
+        for(int i = 0; i < kills.size(); i++){
+            kills[i].time--;
+            if(kills[i].time <= 0) kills.erase(kills.begin()+i);
+            drawText("+10", kills[i].invaderX - 20, kills[i].invaderHeight +30, 0.15);
+        }
+        
+        // DRAW HITS
+        glColor3f(1, 0, 0);
+        for(int i = 0; i < hits.size(); i++){
+            hits[i].time--;
+            if(hits[i].time <= 0) hits.erase(hits.begin()+i);
+            drawText("PREGNANT!", hits[i].invaderX - 40, hits[i].invaderHeight +30, 0.15);
+        }
+        
         //Dibuja Invader
         GLUquadricObj *invader = gluNewQuadric();
         glColor3f(0.05, 0.67, 0.87);
         glShadeModel (GL_FLAT);
-        
+
         glPushMatrix();
         //Invader Rotation
         //glRotatef(angle, 0.0, 1.0, 0.0);
@@ -327,6 +387,8 @@ void onMenu(int opcion) {
             if(gameStatus == STARTED || gameStatus == PAUSED){
                 timer = 0;
                 levels = 0;
+                score = 0;
+                lives = 3;
                 gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
                 invaders.clear();
@@ -469,6 +531,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             if(gameStatus == STARTED || gameStatus == PAUSED){
                 timer = 0;
                 levels = 0;
+                score = 0;
+                lives = 3;
                 gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
                 invaders.clear();
