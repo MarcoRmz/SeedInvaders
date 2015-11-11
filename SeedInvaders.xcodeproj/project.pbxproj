@@ -25,6 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A80B3291BF3ACB300967C91 /* invader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = invader.h; sourceTree = "<group>"; };
 		A9FCC5481BD72D1D00FCC3DA /* SeedInvaders */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SeedInvaders; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9FCC54B1BD72D1D00FCC3DA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A9FCC5521BD72D2900FCC3DA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -66,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				A9FCC54B1BD72D1D00FCC3DA /* main.cpp */,
+				0A80B3291BF3ACB300967C91 /* invader.h */,
 			);
 			path = SeedInvaders;
 			sourceTree = "<group>";
@@ -243,6 +245,7 @@
 				A9FCC5511BD72D1D00FCC3DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

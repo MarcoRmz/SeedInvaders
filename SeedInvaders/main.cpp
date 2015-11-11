@@ -9,17 +9,14 @@
 #include <algorithm>
 #include <ctime>
 #include <utility>
+#include <string>
 
 using namespace std;
 
-struct Invader {
-    double invaderX;
-    double invaderHeight;
-    int type; // 0 == invader
-    double speed;
-    int time;
-    Invader(int x, int type, double speed) : invaderX(x), invaderHeight(0), type(type), speed(speed), time(50) {}
-};
+enum Status { STOPPED, STARTED, WON, LOST, PAUSED, INSTRUCTIONS };
+Status gameStatus = STOPPED;
+
+void drawText(string text,int x,int y, double size);
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
@@ -27,18 +24,19 @@ double angle = 0;
 double enemyInterval = 300.0, enemySpawnrate = 300.0;
 double maxSpeed = 4.0;
 bool speedCheck = false, spawnrateCheck = false;
-vector<Invader> invaders;
-vector<Invader> kills;
-vector<Invader> hits;
+int powerupStatus = 0;
 
 long long timerMS = 0;
 double playerPositionX = screenWidth/2.0;
 bool playerLeft = false, playerRight = false;
-
-enum Status { STOPPED, STARTED, WON, LOST, PAUSED, INSTRUCTIONS };
-Status gameStatus = STOPPED;
-
 string minutesStr, secondsStr, milisecondsStr;
+
+#include "invader.h"
+
+vector<Invader> invaders;
+vector<Invader> kills;
+vector<Invader> hits;
+
 
 void  initLight(void) {
     // Light
@@ -97,11 +95,6 @@ void getTime() {
     drawTime(minutesStr + ":" + secondsStr + "." + milisecondsStr);
 }
 
-double fRand(double fMin, double fMax)
-{
-    double f = (double)rand() / RAND_MAX;
-    return fMin + f * (fMax - fMin);
-}
 
 void drawText(std::string text,int x,int y, double size) {
     glPushMatrix();
@@ -134,8 +127,7 @@ void myTimer(int i) {
         // cout << "Enemy INTERVAL: " << enemyInterval << endl;
         // ENEMY CREATION
         if(enemyInterval <= 0) {
-            invaders.push_back(Invader(rand() % (screenWidth - 20) + 20,
-                                       0, fRand(2.0, maxSpeed)));
+            invaders.push_back(Invader());
             enemyInterval = enemySpawnrate;
         }
         for(int i = 0; i < invaders.size(); i++){
@@ -144,6 +136,9 @@ void myTimer(int i) {
             // KILL INVADER
             if(invaders[i].invaderHeight >= textZoneHeight-150 && playerPositionX-35 <= invaders[i].invaderX && invaders[i].invaderX <= playerPositionX+35){
                 kills.push_back(invaders[i]);
+                if(invaders[i].type == 10){
+                    powerupStatus = 1;
+                }
                 invaders.erase(invaders.begin()+i);
                 score += 10;
 
@@ -206,57 +201,44 @@ void display() {
         drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels/2) + "  Powerups:",screenWidth * 0.2,screenHeight * 0.97, 0.15);
         
         
-        
         // DRAW KILLS
         glColor3f(1, 1, 0);
         for(int i = 0; i < kills.size(); i++){
-            kills[i].time--;
             if(kills[i].time <= 0) kills.erase(kills.begin()+i);
-            drawText("+10", kills[i].invaderX - 20, kills[i].invaderHeight +30, 0.15);
+            kills[i].paintText();
         }
         
         // DRAW HITS
         glColor3f(1, 0, 0);
         for(int i = 0; i < hits.size(); i++){
-            hits[i].time--;
             if(hits[i].time <= 0) hits.erase(hits.begin()+i);
-            drawText("PREGNANT!", hits[i].invaderX - 40, hits[i].invaderHeight +30, 0.15);
+            hits[i].paintText("PREGNANT");
         }
         
         //Dibuja Invader
-        GLUquadricObj *invader = gluNewQuadric();
-        glColor3f(0.05, 0.67, 0.87);
-        glShadeModel (GL_FLAT);
 
-        glPushMatrix();
-        //Invader Rotation
-        //glRotatef(angle, 0.0, 1.0, 0.0);
         for(int i = 0; i < invaders.size(); i++){
-            glPushMatrix();
-            glTranslatef(invaders[i].invaderX-3.5, invaders[i].invaderHeight, -50.0);
-            glRotatef(260.0, 1.0, -0.2, 0.0);
-            gluQuadricDrawStyle(invader, GLU_LINE);
-            gluCylinder(invader, 1, 4, 20, 8, 4);
-            glPopMatrix();
-            glPushMatrix();
-            glTranslatef(invaders[i].invaderX, invaders[i].invaderHeight + 15, -50.0);
-            glRotatef(260.0, 1.0, 0.1, 0.0);
-            gluQuadricDrawStyle(invader, GLU_LINE);
-            gluCylinder(invader, 4, 7, 30, 8, 4);
-            glPopMatrix();
-            glPushMatrix();
-            glTranslatef(invaders[i].invaderX-3, invaders[i].invaderHeight + 50, -50.0);
-            glRotatef(260.0, 1.0, 0.0, 0.0);
-            gluQuadricDrawStyle(invader, GLU_LINE);
-            gluSphere(invader, 10, 5, 4);
-            glPopMatrix();
+            invaders[i].paint();
         }
-        glPopMatrix();
         
-        if(playerLeft && playerPositionX > 0) playerPositionX-= 10;
-        if(playerRight && playerPositionX < screenWidth) playerPositionX+= 10;
+        double speedMeter = 1.0;
+        if(powerupStatus == 1){
+            speedMeter = 1.5;
+        }
+        
+        if(playerLeft && playerPositionX > 0) {
+            playerPositionX-= 10 * speedMeter;
+        }
+        if(playerRight && playerPositionX < screenWidth) {
+            playerPositionX+= 10 * speedMeter;
+        }
         
         //Dibuja Canasta
+        
+        if (powerupStatus == 1) {
+            
+        }
+        
         GLUquadricObj *hero = gluNewQuadric();
         glColor3f(1.0, 1.0, 1.0);
         glShadeModel (GL_FLAT);
