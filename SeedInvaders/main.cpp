@@ -331,9 +331,10 @@ void display() {
         drawText("Pausa: 'P'",screenWidth * 0.05,screenHeight * 0.3, 0.2);
         drawText("Reiniciar: 'R'",screenWidth * 0.05,screenHeight * 0.35, 0.2);
         drawText("Ayuda: 'H'",screenWidth * 0.05,screenHeight * 0.4, 0.2);
-        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.45, 0.2);
-        drawText("Boton Derecho del mouse",screenWidth * 0.05,screenHeight * 0.5, 0.1);
-        drawText("mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.53, 0.1);
+        drawText("Menu Principal: 'S'",screenWidth * 0.05,screenHeight * 0.45, 0.2);
+        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.5, 0.2);
+        drawText("Boton Derecho del mouse",screenWidth * 0.05,screenHeight * 0.55, 0.1);
+        drawText("mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.58, 0.1);
         
         //Game Goal
         glColor3f(0,0,1);
@@ -359,7 +360,7 @@ void onMenu(int opcion) {
     switch(opcion) {
             //Iniciar
         case 1:
-            if(gameStatus != STARTED){
+            if(gameStatus != STARTED && gameStatus != LOST){
                 gameStatus = STARTED;
             }
             glClear( GL_COLOR_BUFFER_BIT );
@@ -368,15 +369,16 @@ void onMenu(int opcion) {
             
             //Reiniciar
         case 2:
-            if(gameStatus == STARTED || gameStatus == PAUSED){
+            if(gameStatus != STOPPED && gameStatus != INSTRUCTIONS){
                 timer = 0;
                 levels = 0;
                 score = 0;
                 lives = 3;
-                gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
                 invaders.clear();
                 enemyInterval = enemySpawnrate;
+                
+                gameStatus = STARTED;
                 
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
@@ -410,6 +412,22 @@ void onMenu(int opcion) {
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
             break;
+        
+        case 6:
+            //Main Menu
+            gameStatus = STOPPED;
+            
+            timer = 0;
+            levels = 0;
+            score = 0;
+            lives = 3;
+            playerPositionX = screenWidth/2.0;
+            invaders.clear();
+            enemyInterval = enemySpawnrate;
+            
+            glClear( GL_COLOR_BUFFER_BIT );
+            glFlush();// Limpia la pantalla
+            break;
     }
     glutPostRedisplay();
 }
@@ -424,6 +442,7 @@ void crearMenu(void) {
     glutAddMenuEntry("Iniciar", 1);
     glutAddMenuEntry("Reiniciar", 2);
     glutAddMenuEntry("Pausa", 3);
+    glutAddMenuEntry("Menu Principal", 6);
     glutAddMenuEntry("Salir", 4);
     glutAddMenuEntry("Instrucciones", 5);
     glutAddSubMenu("Autores", autores);
@@ -474,7 +493,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             //Inicio
         case 'i':
         case 'I':
-            if(gameStatus != STARTED){
+            if(gameStatus != STARTED && gameStatus != LOST){
                 gameStatus = STARTED;
             }
             glClear( GL_COLOR_BUFFER_BIT );
@@ -512,15 +531,17 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             //Reset
         case 'R':
         case 'r':
-            if(gameStatus == STARTED || gameStatus == PAUSED){
+            if(gameStatus != STOPPED && gameStatus != INSTRUCTIONS){
                 timer = 0;
                 levels = 0;
                 score = 0;
                 lives = 3;
-                gameStatus = STOPPED;
                 playerPositionX = screenWidth/2.0;
                 invaders.clear();
                 enemyInterval = enemySpawnrate;
+                
+                gameStatus = STARTED;
+                
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
             }
@@ -534,6 +555,23 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             } else if(gameStatus != STARTED && gameStatus != PAUSED){
                 gameStatus = INSTRUCTIONS;
             }
+            glClear( GL_COLOR_BUFFER_BIT );
+            glFlush();// Limpia la pantalla
+            break;
+            
+        case 'S':
+        case 's':
+            //Go to main screen
+            gameStatus = STOPPED;
+            
+            timer = 0;
+            levels = 0;
+            score = 0;
+            lives = 3;
+            playerPositionX = screenWidth/2.0;
+            invaders.clear();
+            enemyInterval = enemySpawnrate;
+            
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
             break;
