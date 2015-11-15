@@ -324,7 +324,7 @@ void display() {
         glColor3f(1,0,0);
         glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
         glColor3f(1,1,1);
-        drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con un score de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.15);
+        drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con un score de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.12);
     } else if (gameStatus == INSTRUCTIONS) {
         //Display Game Instructions
         //BKG Color
