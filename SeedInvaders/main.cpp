@@ -43,17 +43,12 @@ void  initLight(void) {
     // Light
     /*
     GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
-    GLfloat diffuse[4] ={0.3, 0.2, 0.4, 0.5};
-    GLfloat position[4] ={8.0, 9.0, 5.0, 1.0};
-    
-    GLfloat lmodel_ambient[4] ={0.3, 0.2, 0.4, 0.5};
-    GLfloat local_view[1] ={0.0};
+    GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat position[4] ={1.0, 2.0, 0.0, 1.0};
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
     
     glFrontFace(GL_CW);
     glEnable(GL_LIGHTING);
@@ -61,7 +56,7 @@ void  initLight(void) {
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);*/
+    glDepthFunc(GL_LESS); */
 }
 
 void drawTime(string pTimer) {
