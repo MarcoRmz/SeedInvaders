@@ -81,7 +81,6 @@ class Invader {
                 scale = 1.0;
                 break;
         }
-        
         glPushMatrix();
         
         glPushMatrix();

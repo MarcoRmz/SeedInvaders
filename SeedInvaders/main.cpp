@@ -229,7 +229,6 @@ void display() {
         }
         
         //Dibuja Invader
-
         for(int i = 0; i < invaders.size(); i++){
             invaders[i].paint();
         }
