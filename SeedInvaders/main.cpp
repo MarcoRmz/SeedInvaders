@@ -152,6 +152,10 @@ void myTimer(int i) {
             }
         }
         
+        if (lives <= 0) {
+            gameStatus = LOST;
+        }
+        
         angle += 30;
         if (angle >= 360) {
             angle = 0;
@@ -233,12 +237,11 @@ void display() {
             playerPositionX+= 10 * speedMeter;
         }
         
-        //Dibuja Canasta
-        
         if (powerupStatus == 1) {
             
         }
         
+        //Dibuja Canasta
         GLUquadricObj *hero = gluNewQuadric();
         glColor3f(1.0, 1.0, 1.0);
         glShadeModel (GL_FLAT);
@@ -297,22 +300,22 @@ void display() {
         drawText("Ayuda (H)", (screenWidth/2) - 85, screenHeight * 0.63, 0.25);
     } else if (gameStatus == PAUSED) {
         //Display Game Paused
-        glColor3f(0,0,1);
+        glColor3f(0,1,0);
         glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         glColor3f(1,1,1);
         drawText("Pausa", (screenWidth/2) - 50, screenHeight * 0.5, 0.25);
     } else if (gameStatus == WON) {
         //Display Game Won
-        glColor3f(0,0,1);
+        glColor3f(0,1,0);
         glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
         glColor3f(1,1,1);
         drawText("Felicidades ganaste con " + to_string(score) + " en " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
     } else if (gameStatus == LOST) {
         //Display Game Lost
-        glColor3f(0,0,1);
-        glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
+        glColor3f(1,0,0);
+        glRectf(screenWidth * 0.18, screenHeight * 0.45,screenWidth * 0.85, screenHeight * 0.52);
         glColor3f(1,1,1);
-        drawText("Perdiste llegaste al nivel " + to_string(levels/2) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
+        drawText("Perdiste! Tu score es de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.2, screenHeight * 0.5, 0.15);
     } else if (gameStatus == INSTRUCTIONS) {
         //Display Game Instructions
         //BKG Color
