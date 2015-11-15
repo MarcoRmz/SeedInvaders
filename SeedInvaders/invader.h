@@ -46,11 +46,12 @@ class Invader {
         switch (type) {
             case 10:
                 text = "POWERUP";
-                rgb = Color(0.3, 0.3, 1.0);
+                //0.3, 0.3, 1.0
+                rgb = Color(0.1803921569,0.862745098,0.6901960784);
                 break;
             default:
                 text = "+10";
-                rgb = Color(0.05, 0.67, 0.87);
+                rgb = Color(0.2196078431,0.5176470588,1);
                 break;
         }
         
