@@ -69,7 +69,7 @@ class Invader {
     void paint(){
         GLUquadricObj *invader = gluNewQuadric();
         glColor3f(rgb.r, rgb.g, rgb.b);
-        glShadeModel (GL_FLAT);
+        glShadeModel (GL_SMOOTH);
         //Invader Rotation
         
         double scale = 1.0;
@@ -88,10 +88,10 @@ class Invader {
         if(type!=10){
 
 
-            glTranslatef(invaderX-3.5*scale, invaderHeight, -50.0);
+            glTranslatef(invaderX-3.5*scale, invaderHeight + 5, -50.0);
             glRotatef(angle, 0.0, -0.99, 0.0);
             glRotatef(260.0, 1.0, -0.2, 0.0);
-            gluQuadricDrawStyle(invader, GLU_LINE);
+            gluQuadricDrawStyle(invader, GLU_FILL);
             gluCylinder(invader, 1*scale, 4*scale, 20*scale, 8*scale, 4*scale);
             
             glPopMatrix();
@@ -99,7 +99,7 @@ class Invader {
             glTranslatef(invaderX-3.5, invaderHeight + 45*scale, -50.0);
             glRotatef(-angle-10, 0.0, 0.9, 0.0);
             glRotatef(-260.0, 1.0, 0.1, 0.0);
-            gluQuadricDrawStyle(invader, GLU_LINE);
+            gluQuadricDrawStyle(invader, GLU_FILL);
             gluCylinder(invader, 7*scale, 4*scale, 25*scale, 8*scale, 4*scale);
             glPopMatrix();
             glPushMatrix();
@@ -107,7 +107,7 @@ class Invader {
         }
         glTranslatef(invaderX-3, invaderHeight + 50, -50.0);
         glRotatef(260.0, 1.0, 0.0, 0.0);
-        gluQuadricDrawStyle(invader, GLU_LINE);
+        gluQuadricDrawStyle(invader, GLU_FILL);
         gluSphere(invader, 10*scale, 5*scale, 4*scale);
         glPopMatrix();
         

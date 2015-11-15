@@ -43,10 +43,10 @@ void  initLight(void) {
     // Light
     /*
     GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
-    GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat diffuse[4] ={0.3, 0.2, 0.4, 0.5};
     GLfloat position[4] ={8.0, 9.0, 5.0, 1.0};
     
-    GLfloat lmodel_ambient[4] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat lmodel_ambient[4] ={0.3, 0.2, 0.4, 0.5};
     GLfloat local_view[1] ={0.0};
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
@@ -201,7 +201,7 @@ void display() {
     
     if (gameStatus == STARTED) {
         float mat[4];
-        
+
         //Display Game Screen
         glColor3f(0, 0, 0);
         glRectf(0,textZoneHeight, screenWidth, screenHeight);
@@ -254,35 +254,20 @@ void display() {
         //Dibuja Canasta
         GLUquadricObj *hero = gluNewQuadric();
         glColor3f(1.0, 1.0, 1.0);
-        glShadeModel (GL_FLAT);
-        
+        glShadeModel (GL_SMOOTH);
+        //Sphere
         glPushMatrix();
-        glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
-        glRotatef(260.0, 1.0, 0.0, 0.0);
-        //Material
-        mat[0] = 0.25;
-        mat[1] = 0.25;
-        mat[2] = 0.25;
-        mat[3] = 1.0;
-        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
-        mat[0] = 0.4;
-        mat[1] = 0.4;
-        mat[2] = 0.4;
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
-        mat[0] = 0.774597;
-        mat[1] = 0.774597;
-        mat[2] = 0.774597;
-        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
-        glMaterialf(GL_FRONT, GL_SHININESS, 0.6 * 128.0);
-        gluQuadricDrawStyle(hero, GLU_FILL);
-        gluCylinder(hero, 28, 17, 63, 14, 4);
-        glPopMatrix();
-        
-        glPushMatrix();
-        glTranslatef(playerPositionX, screenHeight * 0.85, -50.0);
+        glTranslatef(playerPositionX, screenHeight * 0.85, -60.0);
         glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(hero, GLU_FILL);
         gluSphere(hero, 21, 14, 4);
+        glPopMatrix();
+        //Cylinder
+        glPushMatrix();
+        glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(hero, GLU_FILL);
+        gluCylinder(hero, 28, 17, 63, 14, 4);
         glPopMatrix();
     } else if (gameStatus == STOPPED) {
         //Game stopped Display MAIN
