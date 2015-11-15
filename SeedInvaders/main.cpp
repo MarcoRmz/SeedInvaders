@@ -25,6 +25,7 @@ double enemyInterval = 300.0, enemySpawnrate = 300.0;
 double maxSpeed = 4.0;
 bool speedCheck = false, spawnrateCheck = false;
 int powerupStatus = 0;
+int levelCounter = 1;
 
 long long timerMS = 0;
 double playerPositionX = screenWidth/2.0;
@@ -116,12 +117,18 @@ void myTimer(int i) {
         if(spawnrateCheck && seconds % 5 == 0 && enemySpawnrate > 20.0) {
             enemySpawnrate -= 20.0;
             spawnrateCheck = false;
+            
             //cout << "LOWERED SPAWNRATE" << endl;
         }
         if(speedCheck && seconds % 15 == 0 && maxSpeed <= 10) {
             maxSpeed+= 0.5;
             speedCheck = false;
             //cout << "INCREASED SPEED" << endl;
+            levelCounter++;
+            if (levelCounter % 2 == 0) {
+                levels++;
+                levelCounter = 1;
+            }
         }
         
         // cout << "Enemy INTERVAL: " << enemyInterval << endl;
@@ -302,22 +309,22 @@ void display() {
         drawText("Ayuda (H)", (screenWidth/2) - 85, screenHeight * 0.63, 0.25);
     } else if (gameStatus == PAUSED) {
         //Display Game Paused
-        glColor3f(0,1,0);
+        glColor3f(0.1803921569,0.862745098,0.6901960784);
         glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         glColor3f(1,1,1);
         drawText("Pausa", (screenWidth/2) - 50, screenHeight * 0.5, 0.25);
     } else if (gameStatus == WON) {
         //Display Game Won
-        glColor3f(0,1,0);
+        glColor3f(0.3490196078,0.7490196078,0.2156862745);
         glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
         glColor3f(1,1,1);
         drawText("Felicidades ganaste con " + to_string(score) + " en " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
     } else if (gameStatus == LOST) {
         //Display Game Lost
         glColor3f(1,0,0);
-        glRectf(screenWidth * 0.15, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
+        glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
         glColor3f(1,1,1);
-        drawText("Perdiste! Tu score es de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.17, screenHeight * 0.5, 0.15);
+        drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con un score de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.15);
     } else if (gameStatus == INSTRUCTIONS) {
         //Display Game Instructions
         //BKG Color
@@ -380,6 +387,7 @@ void onMenu(int opcion) {
                 invaders.clear();
                 enemyInterval = 300.0;
                 enemySpawnrate = 300.0;
+                powerupStatus = 0;
                 
                 gameStatus = STARTED;
                 
@@ -428,6 +436,7 @@ void onMenu(int opcion) {
             invaders.clear();
             enemyInterval = 300.0;
             enemySpawnrate = 300.0;
+            powerupStatus = 0;
             
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -544,6 +553,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 invaders.clear();
                 enemyInterval = 300.0;
                 enemySpawnrate = 300.0;
+                powerupStatus = 0;
                 
                 gameStatus = STARTED;
                 
@@ -577,6 +587,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             invaders.clear();
             enemyInterval = 300.0;
             enemySpawnrate = 300.0;
+            powerupStatus = 0;
             
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
