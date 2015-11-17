@@ -42,14 +42,18 @@ vector<Invader> hits;
 
 void  initLight(void) {
     // Light
-    
     GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
     GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
-    GLfloat position[4] ={1.0, 2.0, 0.0, 1.0};
+    GLfloat position[4] ={8.0, 9.0, 5.0, 1.0};
+    
+    GLfloat lmodel_ambient[] ={1.0, 1.0, 1.0, 1.0};
+    GLfloat local_view[] ={0.0};
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
     
     glFrontFace(GL_CW);
     glEnable(GL_LIGHT0);
@@ -231,6 +235,37 @@ void display() {
         //Dibuja Invader
         glEnable(GL_LIGHTING);
         for(int i = 0; i < invaders.size(); i++){
+            if (invaders[i].type != 10) {
+                mat[0] = 0.0;
+                mat[1] = 0.05;
+                mat[2] = 0.15;
+                mat[3] = 1.0;
+                glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+                mat[0] = 0.4;
+                mat[1] = 0.5;
+                mat[2] = 0.5;
+                glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+                mat[0] = 0.04;
+                mat[1] = 0.7;
+                mat[2] = 0.7;
+                glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+                glMaterialf(GL_FRONT, GL_SHININESS, .25 * 128.0);
+            } else {
+                mat[0] = 0.35;
+                mat[1] = 0.0;
+                mat[2] = 0.0;
+                mat[3] = 1.0;
+                glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+                mat[0] = 0.4;
+                mat[1] = 0.5;
+                mat[2] = 0.5;
+                glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+                mat[0] = 0.04;
+                mat[1] = 0.7;
+                mat[2] = 0.7;
+                glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+                glMaterialf(GL_FRONT, GL_SHININESS, .15 * 128.0);
+            }
             invaders[i].paint();
         }
         glDisable(GL_LIGHTING);
@@ -252,6 +287,21 @@ void display() {
         GLUquadricObj *hero = gluNewQuadric();
         glColor3f(1.0, 1.0, 1.0);
         glShadeModel (GL_SMOOTH);
+        glPushMatrix();
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.774597;
+        mat[1] = 0.774597;
+        mat[2] = 0.774597;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
         //Sphere
         glPushMatrix();
         glTranslatef(playerPositionX, screenHeight * 0.85, -60.0);
@@ -265,6 +315,7 @@ void display() {
         glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(hero, GLU_FILL);
         gluCylinder(hero, 28, 17, 63, 14, 4);
+        glPopMatrix();
         glPopMatrix();
         glDisable(GL_LIGHTING);
     } else if (gameStatus == STOPPED) {

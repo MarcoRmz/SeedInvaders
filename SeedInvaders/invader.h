@@ -86,7 +86,6 @@ class Invader {
         glPushMatrix();
         if(type!=10){
 
-
             glTranslatef(invaderX-3.5*scale, invaderHeight + 5, -50.0);
             glRotatef(angle, 0.0, -0.99, 0.0);
             glRotatef(260.0, 1.0, -0.2, 0.0);
