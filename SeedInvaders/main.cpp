@@ -26,6 +26,7 @@ double maxSpeed = 4.0;
 bool speedCheck = false, spawnrateCheck = false;
 int powerupStatus = 0;
 int levelCounter = 1;
+string powerupTitle = "";
 
 long long timerMS = 0;
 double playerPositionX = screenWidth/2.0;
@@ -41,7 +42,7 @@ vector<Invader> hits;
 
 void  initLight(void) {
     // Light
-    /*
+    
     GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
     GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
     GLfloat position[4] ={1.0, 2.0, 0.0, 1.0};
@@ -51,12 +52,11 @@ void  initLight(void) {
     glLightfv(GL_LIGHT0, GL_POSITION, position);
     
     glFrontFace(GL_CW);
-    glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS); */
+    glDepthFunc(GL_LESS);
 }
 
 void drawTime(string pTimer) {
@@ -88,7 +88,7 @@ void getTime() {
     }
     
     //Manda imprimir el tiempo
-    drawTime(minutesStr + ":" + secondsStr + "." + milisecondsStr);
+    drawTime(minutesStr + ":" + secondsStr);
 }
 
 
@@ -140,6 +140,7 @@ void myTimer(int i) {
                 kills.push_back(invaders[i]);
                 if(invaders[i].type == 10){
                     powerupStatus = 1;
+                    powerupTitle = "Speed";
                 }
                 invaders.erase(invaders.begin()+i);
                 score += 10;
@@ -194,20 +195,19 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
+    //Matriz de materiales
+    float mat[4];
+    
     if (gameStatus == STARTED) {
-        float mat[4];
-
         //Display Game Screen
-        glColor3f(0, 0, 0);
-        glRectf(0,textZoneHeight, screenWidth, screenHeight);
-        
-        glColor3f(1, 1, 1);
-        //Imprime Timer
-        getTime();
         
         //Game Stats
-        drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels) + "  Powerups:",screenWidth * 0.2,screenHeight * 0.97, 0.15);
+        glColor3f(1, 1, 1);
+        getTime();
+        drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels) + "  Powerups: " + powerupTitle,screenWidth * 0.16,screenHeight * 0.97, 0.15);
         
+        glColor3f(0, 0, 0);
+        glRectf(0,textZoneHeight, screenWidth, screenHeight);
         
         // DRAW KILLS
         glColor3f(1, 1, 0);
@@ -229,9 +229,11 @@ void display() {
         }
         
         //Dibuja Invader
+        glEnable(GL_LIGHTING);
         for(int i = 0; i < invaders.size(); i++){
             invaders[i].paint();
         }
+        glDisable(GL_LIGHTING);
         
         double speedMeter = 1.0;
         if(powerupStatus == 1){
@@ -246,6 +248,7 @@ void display() {
         }
         
         //Dibuja Canasta
+        glEnable(GL_LIGHTING);
         GLUquadricObj *hero = gluNewQuadric();
         glColor3f(1.0, 1.0, 1.0);
         glShadeModel (GL_SMOOTH);
@@ -263,6 +266,7 @@ void display() {
         gluQuadricDrawStyle(hero, GLU_FILL);
         gluCylinder(hero, 28, 17, 63, 14, 4);
         glPopMatrix();
+        glDisable(GL_LIGHTING);
     } else if (gameStatus == STOPPED) {
         //Game stopped Display MAIN
         //BKG Color
@@ -276,34 +280,36 @@ void display() {
         glColor3f(1,1,1);
         drawText("Seed Invaders", (screenWidth/2) - 180, screenHeight * 0.2, 0.4);
         
+        //Button Texts
+        drawText("Iniciar (I)", (screenWidth/2) - 80, screenHeight * 0.5, 0.25);
+        drawText("Ayuda (H)", (screenWidth/2) - 85, screenHeight * 0.63, 0.25);
+        
         glColor3f(0.1803921569,0.862745098,0.6901960784);
         //Play Button
         glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         //Help Button
         glRectf(screenWidth * 0.37, screenHeight * 0.57,screenWidth * 0.61, screenHeight * 0.65);
-        
-        glColor3f(1,1,1);
-        //Button Texts
-        drawText("Iniciar (I)", (screenWidth/2) - 80, screenHeight * 0.5, 0.25);
-        drawText("Ayuda (H)", (screenWidth/2) - 85, screenHeight * 0.63, 0.25);
     } else if (gameStatus == PAUSED) {
         //Display Game Paused
-        glColor3f(0.1803921569,0.862745098,0.6901960784);
-        glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         glColor3f(1,1,1);
         drawText("Pausa", (screenWidth/2) - 50, screenHeight * 0.5, 0.25);
+        
+        glColor3f(0.1803921569,0.862745098,0.6901960784);
+        glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
     } else if (gameStatus == WON) {
         //Display Game Won
-        glColor3f(0.3490196078,0.7490196078,0.2156862745);
-        glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
         glColor3f(1,1,1);
         drawText("Felicidades ganaste con " + to_string(score) + " en " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.3, screenHeight * 0.6, 0.12);
+        
+        glColor3f(0.3490196078,0.7490196078,0.2156862745);
+        glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
     } else if (gameStatus == LOST) {
         //Display Game Lost
-        glColor3f(1,0,0);
-        glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
         glColor3f(1,1,1);
         drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con un score de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.12);
+        
+        glColor3f(1,0,0);
+        glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
     } else if (gameStatus == INSTRUCTIONS) {
         //Display Game Instructions
         //BKG Color
