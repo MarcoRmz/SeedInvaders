@@ -240,7 +240,12 @@ void display() {
         for(int i = 0; i < hits.size(); i++){
             if(hits[i].time <= 0) hits.erase(hits.begin()+i);
             if (hits[i].type != 10) {
-                hits[i].paintText("PREGNANT");
+                if (timer/15 > 10) {
+                    hits[i].paintText("SIDA");
+                } else {
+                    hits[i].paintText("PREGNANT");
+                }
+                
             }
         }
         
