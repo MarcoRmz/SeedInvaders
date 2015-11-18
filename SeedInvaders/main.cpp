@@ -43,7 +43,8 @@ vector<Invader> invaders;
 vector<Invader> kills;
 vector<Invader> hits;
 
-Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
+//Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
+Sound sonido = Sound("/Users/Canales/Workspace/Learning/OpenGL/SeedInvaders/SeedInvaders/Lateralus.wav");
 
 void  initLight(void) {
 
