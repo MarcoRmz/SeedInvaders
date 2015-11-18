@@ -40,13 +40,7 @@ vector<Invader> invaders;
 vector<Invader> kills;
 vector<Invader> hits;
 
-//Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/Lateralus.wav");
-//
-//void sound (int value){
-//    sonido.PlaySound();
-//    glutTimerFunc(4000,sound,0);
-//    
-//}
+Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
 
 void  initLight(void) {
     // Light
@@ -69,6 +63,7 @@ void  initLight(void) {
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    
 }
 
 void drawTime(string pTimer) {
@@ -212,10 +207,6 @@ void display() {
     
     if (gameStatus == STARTED) {
         //Display Game Screen
-        
-        //Music
-//        sonido.PlaySound();
-//        glutTimerFunc(4000,sound,0);
         
         //Game Stats
         glColor3f(1, 1, 1);
@@ -423,6 +414,8 @@ void onMenu(int opcion) {
         case 1:
             if(gameStatus != STARTED && gameStatus != LOST){
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -444,6 +437,8 @@ void onMenu(int opcion) {
                 playerRight = false;
                 
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
                 
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
@@ -454,8 +449,10 @@ void onMenu(int opcion) {
         case 3:
             if (gameStatus == STARTED) {
                 gameStatus = PAUSED;
+                sonido.PauseSound();
             } else if (gameStatus == PAUSED) {
                 gameStatus = STARTED;
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -564,6 +561,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'I':
             if(gameStatus != STARTED && gameStatus != LOST){
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -574,8 +573,10 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'P':
             if (gameStatus == STARTED) {
                 gameStatus = PAUSED;
+                sonido.PauseSound();
             } else if (gameStatus == PAUSED) {
                 gameStatus = STARTED;
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -614,6 +615,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 playerRight = false;
                 
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
                 
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla

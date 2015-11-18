@@ -113,7 +113,16 @@ Sound::Sound(char*  filePath){
 
 void Sound::PlaySound(){
     
-    alSourcePlay(source);                                                       //Play the sound buffer linked to the source
+    //Play the sound buffer linked to the source
+    alSourcePlay(source);
     if(alGetError() != AL_NO_ERROR) endWithError(errors[9]); //Error when playing sound
+    
+}
+
+void Sound::PauseSound(){
+    
+    //Pause the sound buffer linked to the source
+    alSourceStop(source);
+    if(alGetError() != AL_NO_ERROR) endWithError(errors[9]); //Error when pausing sound
     
 }

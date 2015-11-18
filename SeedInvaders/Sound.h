@@ -33,6 +33,7 @@ class Sound {
 public:
     Sound(char*  filePath);
     void PlaySound();
+    void PauseSound();
     ~Sound();
     
 private:
@@ -58,3 +59,4 @@ private:
 
 
 #endif
+
