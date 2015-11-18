@@ -403,6 +403,9 @@ void display() {
         glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         //Help Button
         glRectf(screenWidth * 0.37, screenHeight * 0.57,screenWidth * 0.61, screenHeight * 0.65);
+        
+        //Stop music
+        sonido.PauseSound();
     } else if (gameStatus == PAUSED) {
         //Display Game Paused
         glColor3f(1,1,1);
@@ -417,6 +420,9 @@ void display() {
         
         glColor3f(0.3490196078,0.7490196078,0.2156862745);
         glRectf(screenWidth * 0.25, screenHeight * 0.65,screenWidth * 0.75, screenHeight * 0.55);
+        
+        //Stop music
+        sonido.PauseSound();
     } else if (gameStatus == LOST) {
         //Display Game Lost
         glColor3f(1,1,1);
@@ -424,6 +430,9 @@ void display() {
         
         glColor3f(1,0,0);
         glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
+        
+        //Stop music
+        sonido.PauseSound();
     } else if (gameStatus == INSTRUCTIONS) {
         //Display Game Instructions
         //BKG Color
@@ -458,6 +467,9 @@ void display() {
         
         //Autors
         drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.97, 0.12);
+        
+        //Stop music
+        sonido.PauseSound();
     }
     
     //Intercambia los frame buffers
