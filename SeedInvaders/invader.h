@@ -47,7 +47,7 @@ class Invader {
         angle = 0;
         switch (type) {
             case 10:
-                text = "POWERUP";
+                text = "RAPIDEZ";
                 //0.3, 0.3, 1.0
                 rgb = Color(0.1803921569,0.862745098,0.6901960784);
                 break;

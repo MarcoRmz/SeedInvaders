@@ -10,6 +10,7 @@
 #include <ctime>
 #include <utility>
 #include <string>
+#include "Sound.h"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ vector<Invader> invaders;
 vector<Invader> kills;
 vector<Invader> hits;
 
+Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
 
 void  initLight(void) {
 
@@ -65,6 +67,7 @@ void  initLight(void) {
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    
 }
 
 void drawTime(string pTimer) {
@@ -170,7 +173,7 @@ void myTimer(int i) {
                 if(invaders[i].type == 10){
                     powerupStatus = 1;
                     powerupTime = 500;
-                    powerupTitle = "Speed";
+                    powerupTitle = "Rapidez";
                 }
                 invaders.erase(invaders.begin()+i);
                 score += 10;
@@ -261,7 +264,7 @@ void display() {
         //Game Stats
         glColor3f(1, 1, 1);
         getTime();
-        drawText("Lives: " + to_string(lives) + "  Score: " + to_string(score) + "  Level: " + to_string(levels) + "  Powerups: " + powerupTitle,screenWidth * 0.16,screenHeight * 0.97, 0.15);
+        drawText("Vidas: " + to_string(lives) + "  Puntos: " + to_string(score) + "  Nivel: " + to_string(levels) + "  Poderes: " + powerupTitle,screenWidth * 0.16,screenHeight * 0.97, 0.15);
         
         glColor3f(0, 0, 0);
         glRectf(0,textZoneHeight, screenWidth, screenHeight);
@@ -283,7 +286,12 @@ void display() {
         for(int i = 0; i < hits.size(); i++){
             if(hits[i].time <= 0) hits.erase(hits.begin()+i);
             if (hits[i].type != 10) {
-                hits[i].paintText("PREGNANT");
+                if (timer/15 > 10) {
+                    hits[i].paintText("SIDA");
+                } else {
+                    hits[i].paintText("PREGNANT");
+                }
+                
             }
         }
         
@@ -340,7 +348,6 @@ void display() {
         //Dibuja Canasta
         glEnable(GL_LIGHTING);
         GLUquadricObj *hero = gluNewQuadric();
-        glColor3f(1.0, 1.0, 1.0);
         glShadeModel (GL_SMOOTH);
         glPushMatrix();
         mat[0] = 0.4;
@@ -412,7 +419,7 @@ void display() {
     } else if (gameStatus == LOST) {
         //Display Game Lost
         glColor3f(1,1,1);
-        drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con un score de: " + to_string(score) + " y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.12);
+        drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con: " + to_string(score) + " puntos y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.12);
         
         glColor3f(1,0,0);
         glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
@@ -425,28 +432,28 @@ void display() {
         //Keys
         glColor3f(0,0,1);
         drawText("Instrucciones",screenWidth * 0.32,screenHeight * 0.1, 0.35);
-        drawText("Keys:",screenWidth * 0.05,screenHeight * 0.2, 0.25);
+        drawText("Controles:",screenWidth * 0.05,screenHeight * 0.2, 0.25);
         glColor3f(1,1,1);
-        drawText("Iniciar: 'I'",screenWidth * 0.05,screenHeight * 0.25, 0.2);
-        drawText("Pausa: 'P'",screenWidth * 0.05,screenHeight * 0.3, 0.2);
-        drawText("Reiniciar: 'R'",screenWidth * 0.05,screenHeight * 0.35, 0.2);
-        drawText("Ayuda: 'H'",screenWidth * 0.05,screenHeight * 0.4, 0.2);
-        drawText("Menu Principal: 'S'",screenWidth * 0.05,screenHeight * 0.45, 0.2);
-        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.5, 0.2);
-        drawText("Boton Derecho del mouse",screenWidth * 0.05,screenHeight * 0.55, 0.1);
-        drawText("mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.58, 0.1);
+        drawText("Iniciar: 'I'",screenWidth * 0.05,screenHeight * 0.25, 0.15);
+        drawText("Pausa: 'P'",screenWidth * 0.05,screenHeight * 0.3, 0.15);
+        drawText("Reiniciar: 'R'",screenWidth * 0.05,screenHeight * 0.35, 0.15);
+        drawText("Ayuda: 'H'",screenWidth * 0.05,screenHeight * 0.4, 0.15);
+        drawText("Menu Principal: 'S'",screenWidth * 0.05,screenHeight * 0.45, 0.15);
+        drawText("Salir: 'Esc'",screenWidth * 0.05,screenHeight * 0.5, 0.18);
+        drawText("Boton Derecho del mouse",screenWidth * 0.05,screenHeight * 0.55, 0.105);
+        drawText("mostrara las mismas opciones",screenWidth * 0.05,screenHeight * 0.58, 0.105);
         
         //Game Goal
         glColor3f(0,0,1);
-        drawText("Game Goal:",screenWidth * 0.4,screenHeight * 0.2, 0.25);
+        drawText("Meta del Juego:",screenWidth * 0.4,screenHeight * 0.2, 0.25);
         glColor3f(1,1,1);
-        drawText("LoremIpsum........",screenWidth * 0.4,screenHeight * 0.25, 0.2);
+        drawText("LoremIpsum........",screenWidth * 0.4,screenHeight * 0.25, 0.15);
         
         //Game Powerups
         glColor3f(0,0,1);
-        drawText("Powerups:",screenWidth * 0.4,screenHeight * 0.35, 0.25);
+        drawText("Poderes:",screenWidth * 0.4,screenHeight * 0.35, 0.25);
         glColor3f(1,1,1);
-        drawText("<3 = Extra Lives",screenWidth * 0.4,screenHeight * 0.4, 0.2);
+        drawText("S = Moviemiento de Jugador más rápido",screenWidth * 0.4,screenHeight * 0.4, 0.15);
         
         //Autors
         drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.97, 0.12);
@@ -462,6 +469,8 @@ void onMenu(int opcion) {
         case 1:
             if(gameStatus != STARTED && gameStatus != LOST){
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -479,8 +488,12 @@ void onMenu(int opcion) {
                 enemyInterval = 300.0;
                 enemySpawnrate = 300.0;
                 powerupStatus = 0;
+                playerLeft = false;
+                playerRight = false;
                 
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
                 
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
@@ -491,8 +504,10 @@ void onMenu(int opcion) {
         case 3:
             if (gameStatus == STARTED) {
                 gameStatus = PAUSED;
+                sonido.PauseSound();
             } else if (gameStatus == PAUSED) {
                 gameStatus = STARTED;
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -528,6 +543,8 @@ void onMenu(int opcion) {
             enemyInterval = 300.0;
             enemySpawnrate = 300.0;
             powerupStatus = 0;
+            playerLeft = false;
+            playerRight = false;
             
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -599,6 +616,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'I':
             if(gameStatus != STARTED && gameStatus != LOST){
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -609,8 +628,10 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'P':
             if (gameStatus == STARTED) {
                 gameStatus = PAUSED;
+                sonido.PauseSound();
             } else if (gameStatus == PAUSED) {
                 gameStatus = STARTED;
+                sonido.PlaySound();
             }
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
@@ -645,8 +666,12 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 enemyInterval = 300.0;
                 enemySpawnrate = 300.0;
                 powerupStatus = 0;
+                playerLeft = false;
+                playerRight = false;
                 
                 gameStatus = STARTED;
+                //Music
+                sonido.PlaySound();
                 
                 glClear( GL_COLOR_BUFFER_BIT );
                 glFlush();// Limpia la pantalla
@@ -698,6 +723,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             enemyInterval = 300.0;
             enemySpawnrate = 300.0;
             powerupStatus = 0;
+            playerLeft = false;
+            playerRight = false;
             
             glClear( GL_COLOR_BUFFER_BIT );
             glFlush();// Limpia la pantalla
