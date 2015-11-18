@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A93B3E6D1BFCE7BC0003A3A6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B3E6C1BFCE7BC0003A3A6 /* OpenAL.framework */; };
+		A93B3E711BFCE8BD0003A3A6 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A93B3E6F1BFCE8BD0003A3A6 /* Sound.cpp */; settings = {ASSET_TAGS = (); }; };
 		A9FCC54C1BD72D1D00FCC3DA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9FCC54B1BD72D1D00FCC3DA /* main.cpp */; };
 		A9FCC5531BD72D2900FCC3DA /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9FCC5521BD72D2900FCC3DA /* GLUT.framework */; };
 		A9FCC5551BD72D2F00FCC3DA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9FCC5541BD72D2F00FCC3DA /* OpenGL.framework */; };
@@ -26,6 +28,10 @@
 
 /* Begin PBXFileReference section */
 		0A80B3291BF3ACB300967C91 /* invader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = invader.h; sourceTree = "<group>"; };
+		A93B3E6C1BFCE7BC0003A3A6 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		A93B3E6F1BFCE8BD0003A3A6 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sound.cpp; sourceTree = "<group>"; };
+		A93B3E701BFCE8BD0003A3A6 /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
+		A93B3E731BFCECA50003A3A6 /* Lateralus.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Lateralus.wav; sourceTree = "<group>"; };
 		A9FCC5481BD72D1D00FCC3DA /* SeedInvaders */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SeedInvaders; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9FCC54B1BD72D1D00FCC3DA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A9FCC5521BD72D2900FCC3DA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -37,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A93B3E6D1BFCE7BC0003A3A6 /* OpenAL.framework in Frameworks */,
 				A9FCC5551BD72D2F00FCC3DA /* OpenGL.framework in Frameworks */,
 				A9FCC5531BD72D2900FCC3DA /* GLUT.framework in Frameworks */,
 			);
@@ -48,6 +55,7 @@
 		A9FCC53F1BD72D1D00FCC3DA = {
 			isa = PBXGroup;
 			children = (
+				A93B3E6C1BFCE7BC0003A3A6 /* OpenAL.framework */,
 				A9FCC5541BD72D2F00FCC3DA /* OpenGL.framework */,
 				A9FCC5521BD72D2900FCC3DA /* GLUT.framework */,
 				A9FCC54A1BD72D1D00FCC3DA /* SeedInvaders */,
@@ -66,8 +74,11 @@
 		A9FCC54A1BD72D1D00FCC3DA /* SeedInvaders */ = {
 			isa = PBXGroup;
 			children = (
+				A93B3E731BFCECA50003A3A6 /* Lateralus.wav */,
 				A9FCC54B1BD72D1D00FCC3DA /* main.cpp */,
 				0A80B3291BF3ACB300967C91 /* invader.h */,
+				A93B3E6F1BFCE8BD0003A3A6 /* Sound.cpp */,
+				A93B3E701BFCE8BD0003A3A6 /* Sound.h */,
 			);
 			path = SeedInvaders;
 			sourceTree = "<group>";
@@ -129,6 +140,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9FCC54C1BD72D1D00FCC3DA /* main.cpp in Sources */,
+				A93B3E711BFCE8BD0003A3A6 /* Sound.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
