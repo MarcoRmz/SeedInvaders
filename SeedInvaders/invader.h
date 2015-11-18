@@ -35,6 +35,7 @@ class Invader {
         Color rgb;
         string text;
         int time;
+        double angle;
     
     
     Invader(){ //Random Generate
@@ -43,6 +44,7 @@ class Invader {
         type = rand() % (10) + 1;
         speed = fRand(2.0, maxSpeed);
         time = 50;
+        angle = 0;
         switch (type) {
             case 10:
                 text = "POWERUP";
@@ -59,7 +61,7 @@ class Invader {
     
     Invader(int x, int t, double s, Color color, string text) {
         invaderX = x;
-        invaderHeight = -40;
+        invaderHeight = -80;
         type = t;
         speed = s;
         rgb = color;
@@ -71,6 +73,11 @@ class Invader {
         glColor3f(rgb.r, rgb.g, rgb.b);
         glShadeModel (GL_SMOOTH);
         //Invader Rotation
+        
+        angle += speed*5.0;
+        if (angle >= 360) {
+            angle = 0;
+        }
         
         double scale = 1.0;
         switch (type) {
@@ -104,10 +111,20 @@ class Invader {
         
         }
         glTranslatef(invaderX-3, invaderHeight + 50, -50.0);
+        if(type == 10){
+            glRotatef(-angle-10, 0.5, 1.0, 0.0);
+            gluQuadricDrawStyle(invader, GLU_LINE);
+            gluSphere(invader, 10*scale, 8*scale, 8*scale);
+        }
         glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(invader, GLU_FILL);
-        gluSphere(invader, 10*scale, 5*scale, 4*scale);
+        if(type == 10)
+            gluSphere(invader, 5*scale, 5*scale, 4*scale);
+        else
+            gluSphere(invader, 10*scale, 5*scale, 4*scale);
+
         glPopMatrix();
+
         
         glPopMatrix();
     }

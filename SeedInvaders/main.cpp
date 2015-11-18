@@ -21,10 +21,13 @@ void drawText(string text,int x,int y, double size);
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
 double angle = 0;
+double bgLocation = 0;
+bool down = true;
 double enemyInterval = 300.0, enemySpawnrate = 300.0;
 double maxSpeed = 4.0;
 bool speedCheck = false, spawnrateCheck = false;
 int powerupStatus = 0;
+int powerupTime = 0;
 int levelCounter = 1;
 string powerupTitle = "";
 
@@ -41,6 +44,7 @@ vector<Invader> hits;
 
 
 void  initLight(void) {
+
     // Light
     GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
     GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
@@ -130,6 +134,27 @@ void myTimer(int i) {
             }
         }
         
+        if(bgLocation >= screenHeight*0.25 || bgLocation < 0){
+            down = !down;
+        }
+        
+        if(down){
+            bgLocation+=1;
+        } else {
+            bgLocation-=1;
+        }
+        
+
+        cout << powerupTime << endl;
+        if(powerupStatus != 0){
+           powerupTime--;
+           if(powerupTime <= 0) {
+            powerupStatus = 0;
+            powerupTime = 0;
+            powerupTitle = "";
+           }
+        }
+        
         // cout << "Enemy INTERVAL: " << enemyInterval << endl;
         // ENEMY CREATION
         if(enemyInterval <= 0) {
@@ -144,6 +169,7 @@ void myTimer(int i) {
                 kills.push_back(invaders[i]);
                 if(invaders[i].type == 10){
                     powerupStatus = 1;
+                    powerupTime = 500;
                     powerupTitle = "Speed";
                 }
                 invaders.erase(invaders.begin()+i);
@@ -165,10 +191,6 @@ void myTimer(int i) {
             gameStatus = LOST;
         }
         
-        angle += 30;
-        if (angle >= 360) {
-            angle = 0;
-        }
         if(timerMS % 20 == 0) timer += 1;
         timerMS += 5;
         glutPostRedisplay();
@@ -182,7 +204,7 @@ void reshape(int w,int h) {
     glViewport(0,0,w,h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
+    glOrtho(0.0, w, h, 0.0, 0.0, 1000.0);
     screenHeight = h;
     screenWidth = w;
     if(screenHeight < 350 || screenWidth < 600) gameZoneHeight = screenHeight;
@@ -195,12 +217,43 @@ void reshape(int w,int h) {
 void display() {
     
     //BKG Color
-    glClearColor(0.9215686275, 0.5960784314, 0.4862745098,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
-    //Matriz de materiales
+    glClearColor(0.9215686275, 0.5960784314, 0.4862745098,1.0);
+    
     float mat[4];
+    
+    //Dibuja Background
+    glEnable(GL_LIGHTING);
+    GLUquadricObj *background = gluNewQuadric();
+    glShadeModel (GL_SMOOTH);
+    glPushMatrix();
+    mat[0] = 1.0;
+    mat[1] = 0.4;
+    mat[2] = 0.4;
+    mat[3] = 1.0;
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+    mat[0] = 0.4;
+    mat[1] = 0.4;
+    mat[2] = 0.4;
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+    mat[0] = 0.0;
+    mat[1] = 0.0;
+    mat[2] = 0.774597;
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+    glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
+    //Cylinder
+    glPushMatrix();
+    glTranslatef(screenWidth*0.5,  -screenWidth + bgLocation, 0);
+    glRotatef(260.0, 1.0, 0.0, 0.0);
+    gluQuadricDrawStyle(background, GLU_LINE);
+    gluCylinder(background, 370, 370, screenWidth*2.0, 100, 50);
+    glPopMatrix();
+    glPopMatrix();
+    glDisable(GL_LIGHTING);
+    
+    //Matriz de materiales
     
     if (gameStatus == STARTED) {
         //Display Game Screen
@@ -219,6 +272,8 @@ void display() {
             if(kills[i].time <= 0) kills.erase(kills.begin()+i);
             if (kills[i].type == 10) {
                 glColor3f(0.2196078431, 1.0, 0.9725490196);
+            } else {
+                glColor3f(1, 1, 0);
             }
             kills[i].paintText();
         }
@@ -589,6 +644,25 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 invaders.clear();
                 enemyInterval = 300.0;
                 enemySpawnrate = 300.0;
+                powerupStatus = 0;
+                
+                gameStatus = STARTED;
+                
+                glClear( GL_COLOR_BUFFER_BIT );
+                glFlush();// Limpia la pantalla
+            }
+            break;
+        case 'U':
+        case 'u':
+            if(gameStatus != STOPPED && gameStatus != INSTRUCTIONS){
+                timer = 0;
+                levels = 0;
+                score = 0;
+                lives = 500;
+                playerPositionX = screenWidth/2.0;
+                invaders.clear();
+                enemyInterval = 5.0;
+                enemySpawnrate = 5.0;
                 powerupStatus = 0;
                 
                 gameStatus = STARTED;
