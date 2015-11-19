@@ -23,6 +23,7 @@ int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, 
 int timer = 0, seconds = 0, minutes = 0, delta = 1, levels = 0, lives = 3, score = 0;
 double angle = 0;
 double bgLocation = 0;
+double bgAccel = 1;
 bool down = true;
 double enemyInterval = 300.0, enemySpawnrate = 300.0;
 double maxSpeed = 4.0;
@@ -143,9 +144,9 @@ void myTimer(int i) {
         }
         
         if(down){
-            bgLocation+=1;
+            bgLocation+=bgAccel;
         } else {
-            bgLocation-=1;
+            bgLocation-=bgAccel;
         }
         
 
@@ -674,6 +675,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 levels = 0;
                 score = 0;
                 lives = 3;
+                bgAccel = 1;
                 playerPositionX = screenWidth/2.0;
                 invaders.clear();
                 enemyInterval = 300.0;
@@ -697,6 +699,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
                 levels = 0;
                 score = 0;
                 lives = 500;
+                bgAccel = 3;
                 playerPositionX = screenWidth/2.0;
                 invaders.clear();
                 enemyInterval = 5.0;
