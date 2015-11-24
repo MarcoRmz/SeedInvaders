@@ -92,10 +92,10 @@ void initRendering()
     
     image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/pausa.bmp");
     loadTexture(image,i++);
+
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/instrucciones.bmp");
+    loadTexture(image,i++);
 //
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/instrucciones.bmp");
-//    loadTexture(image,i++);
-//    
 //    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover1.bmp");
 //    loadTexture(image,i++);
 //    
@@ -597,6 +597,208 @@ void display() {
         glClearColor(0, 0, 0,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        //Imagen
+        glPushMatrix();
+        glTranslated(0, screenHeight, -100);
+        glScaled(1, -1, 1);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBindTexture(GL_TEXTURE_2D, texName[3]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(screenWidth, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, screenHeight, 0);
+        
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(screenWidth, screenHeight, 0);
+        glEnd();
+        
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+        
+        //Dibuja Canasta
+        glEnable(GL_LIGHTING);
+        GLUquadricObj *hero = gluNewQuadric();
+        glShadeModel (GL_SMOOTH);
+        glPushMatrix();
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.774597;
+        mat[1] = 0.774597;
+        mat[2] = 0.774597;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
+        //Sphere
+        glPushMatrix();
+        glTranslatef(screenWidth*0.15, screenHeight * 0.88, -60.0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(hero, GLU_FILL);
+        gluSphere(hero, 21, 14, 4);
+        glPopMatrix();
+        //Cylinder
+        glPushMatrix();
+        glTranslatef(screenWidth*0.15, screenHeight * 0.78, -50.0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(hero, GLU_FILL);
+        gluCylinder(hero, 28, 17, 63, 14, 4);
+        glPopMatrix();
+        glPopMatrix();
+        glDisable(GL_LIGHTING);
+        
+        //Dibuja Invader
+        GLUquadricObj *invader = gluNewQuadric();
+        glEnable(GL_LIGHTING);
+        mat[0] = 0.0;
+        mat[1] = 0.05;
+        mat[2] = 0.15;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.5;
+        mat[2] = 0.5;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.04;
+        mat[1] = 0.7;
+        mat[2] = 0.7;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, .25 * 128.0);
+        
+        glPushMatrix();
+        glPushMatrix();
+        glTranslatef((screenWidth*0.9)-3.5, 85, -50.0);
+        glRotatef(0, 0.0, -0.99, 0.0);
+        glRotatef(260.0, 1.0, -0.2, 0.0);
+        gluQuadricDrawStyle(invader, GLU_FILL);
+        gluCylinder(invader, 1, 4, 20, 8, 4);
+        
+        glPopMatrix();
+        glPushMatrix();
+        glTranslatef((screenWidth*0.9)-3.5, 125, -50.0);
+        glRotatef(-10, 0.0, 0.9, 0.0);
+        glRotatef(-260.0, 1.0, 0.1, 0.0);
+        gluQuadricDrawStyle(invader, GLU_FILL);
+        gluCylinder(invader, 7, 4, 25, 8, 4);
+        glPopMatrix();
+        glPushMatrix();
+        glTranslatef((screenWidth*0.9)-3, 130, -50.0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(invader, GLU_FILL);
+        gluSphere(invader, 10, 5, 4);
+        
+        glPopMatrix();
+        glPopMatrix();
+        
+        glDisable(GL_LIGHTING);
+
+        //Dibuja Powerup Speed
+        GLUquadricObj *speed = gluNewQuadric();
+        glEnable(GL_LIGHTING);
+        mat[0] = 0.35;
+        mat[1] = 0.0;
+        mat[2] = 0.0;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.5;
+        mat[2] = 0.5;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.04;
+        mat[1] = 0.7;
+        mat[2] = 0.7;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, .15 * 128.0);
+        glPushMatrix();
+        glPushMatrix();
+        glTranslatef((screenWidth*0.55)-3, screenHeight*0.38, -50.0);
+        glRotatef(10, 0.5, 1.0, 0.0);
+        gluQuadricDrawStyle(speed, GLU_LINE);
+        gluSphere(speed, 10*2.0, 8*2.0, 8*2.0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(speed, GLU_FILL);
+        gluSphere(speed, 5*2.0, 5*2.0, 4*2.0);
+        
+        glPopMatrix();
+        glPopMatrix();
+        
+        glDisable(GL_LIGHTING);
+
+        //Dibuja Powerup Extra life
+        GLUquadricObj *life = gluNewQuadric();
+        glEnable(GL_LIGHTING);
+        mat[0] = 0.0;
+        mat[1] = 0.25;
+        mat[2] = 0.05;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.5;
+        mat[2] = 0.5;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.04;
+        mat[1] = 0.7;
+        mat[2] = 0.7;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, .25 * 128.0);
+        glPushMatrix();
+        glPushMatrix();
+        glTranslatef((screenWidth*0.55)-3, screenHeight*0.49, -50.0);
+        glRotatef(10, 0.5, 1.0, 0.0);
+        gluQuadricDrawStyle(life, GLU_LINE);
+        gluSphere(life, 10*1.3, 8*1.3, 8*1.3);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(life, GLU_FILL);
+        gluSphere(life, 5*1.3, 5*1.3, 4*1.3);
+        
+        glPopMatrix();
+        glPopMatrix();
+        
+        glDisable(GL_LIGHTING);
+
+        //Dibuja Powerup Grow
+        GLUquadricObj *grow = gluNewQuadric();
+        glEnable(GL_LIGHTING);
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.774597;
+        mat[1] = 0.774597;
+        mat[2] = 0.774597;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
+        glPushMatrix();
+        glPushMatrix();
+        glTranslatef((screenWidth*0.55)-3, screenHeight*0.61, -50.0);
+        glRotatef(10, 0.5, 1.0, 0.0);
+        gluQuadricDrawStyle(grow, GLU_LINE);
+        gluSphere(grow, 10*1.65, 8*1.65, 8*1.65);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(grow, GLU_FILL);
+        gluSphere(grow, 5*1.65, 5*1.65, 4*1.65);
+        
+        glPopMatrix();
+        glPopMatrix();
+        
+        glDisable(GL_LIGHTING);
+        
+        /*
         //Keys
         glColor3f(0,0,1);
         drawText("Instrucciones",screenWidth * 0.32,screenHeight * 0.1, 0.35);
@@ -625,7 +827,7 @@ void display() {
         
         //Autors
         drawText("Autores: Marco Ramirez : A01191344 y Ricardo Canales : A01191463",screenWidth * 0.1,screenHeight * 0.97, 0.12);
-        
+        */
         //Stop music
         sonido.PauseSound();
     }
