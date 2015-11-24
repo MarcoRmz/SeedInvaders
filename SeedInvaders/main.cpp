@@ -17,7 +17,7 @@ using namespace std;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED, INSTRUCTIONS };
 Status gameStatus = STOPPED;
-static GLuint texName[20];
+static GLuint texName[10];
 
 void drawText(string text,int x,int y, double size);
 
@@ -56,6 +56,10 @@ void loadTexture(Image* image,int k)
     glBindTexture(GL_TEXTURE_2D, texName[k]); //Tell OpenGL which texture to edit
     
     
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     
@@ -76,41 +80,36 @@ void loadTexture(Image* image,int k)
 void initRendering()
 {
     int i=0;
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
     
-    glGenTextures(20, texName); //Make room for our texture
+    glGenTextures(10, texName); //Make room for our texture
     Image* image;
     
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 2.bmp");
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/bkg1.bmp");
     loadTexture(image,i++);
     
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 1.bmp");
-    loadTexture(image,i++);
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/bkg2.bmp");
+//    loadTexture(image,i++);
     
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 3.bmp");
-    loadTexture(image,i++);
-    
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 4.bmp");
-    loadTexture(image,i++);
-    
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 5.bmp");
-    loadTexture(image,i++);
-    
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 6.bmp");
-    loadTexture(image,i++);
-    
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 7.bmp");
-    loadTexture(image,i++);
-    
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 8.bmp");
-    loadTexture(image,i++);
-    
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 9.bmp");
-    loadTexture(image,i++);
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 3.bmp");
+//    loadTexture(image,i++);
+//    
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 4.bmp");
+//    loadTexture(image,i++);
+//    
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 5.bmp");
+//    loadTexture(image,i++);
+//    
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 6.bmp");
+//    loadTexture(image,i++);
+//    
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 7.bmp");
+//    loadTexture(image,i++);
+//    
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 8.bmp");
+//    loadTexture(image,i++);
+//    
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 9.bmp");
+//    loadTexture(image,i++);
     
     delete image;
 }
@@ -128,7 +127,8 @@ void handleResize(int w, int h)
 }
 
 void  initLight(void) {
-
+    initRendering();
+    
     // Light
     GLfloat ambient[4] ={1.0, 1.0, 1.0, 1.0};
     GLfloat diffuse[4] ={1.0, 1.0, 1.0, 1.0};
@@ -312,7 +312,34 @@ void display() {
     
     if (gameStatus == STARTED) {
         //Display Game Screen
+        
         //Dibuja Background
+        //Imagen
+        glPushMatrix();
+        glTranslated(0, screenHeight, -100);
+        glScaled(1, -1, 1);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBindTexture(GL_TEXTURE_2D, texName[0]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(screenWidth, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, screenWidth, 0);
+        
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(screenWidth, screenWidth, 0);
+        glEnd();
+        
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+        
+        //Objeto
+        /*
         glEnable(GL_LIGHTING);
         GLUquadricObj *background = gluNewQuadric();
         glShadeModel (GL_SMOOTH);
@@ -340,28 +367,6 @@ void display() {
         glPopMatrix();
         glPopMatrix();
         glDisable(GL_LIGHTING);
-        
-        /*
-        //ACTIVAR LA MATRIZ DE TEXTURAS
-        glEnable(GL_TEXTURE_2D);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glMatrixMode(GL_TEXTURE);
-        //Seleccionar la textura
-        glBindTexture(GL_TEXTURE_2D,texName[0]);
-        //coordenadas
-        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-        glEnable(GL_TEXTURE_GEN_S);
-        glEnable(GL_TEXTURE_GEN_T);
-        glPushMatrix();
-        //glTranslated(0,0,-2);
-        // Todas las transformaciones se acumulan sobre la
-        // matriz de texturas
-        // MIentras no se seleccione otra Matriz
-        glPopMatrix();
-        glDisable(GL_TEXTURE_GEN_S);
-        glDisable(GL_TEXTURE_GEN_T);
-        glDisable(GL_TEXTURE_2D);
         */
         
         //Game Stats
