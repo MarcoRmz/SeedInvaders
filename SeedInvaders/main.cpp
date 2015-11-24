@@ -17,7 +17,7 @@ using namespace std;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED, INSTRUCTIONS };
 Status gameStatus = STOPPED;
-static GLuint texName[10];
+static GLuint texName[9];
 
 void drawText(string text,int x,int y, double size);
 
@@ -81,34 +81,34 @@ void initRendering()
 {
     int i=0;
     
-    glGenTextures(10, texName); //Make room for our texture
+    glGenTextures(9, texName); //Make room for our texture
     Image* image;
     
     image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/bkg1.bmp");
     loadTexture(image,i++);
     
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/bkg2.bmp");
-//    loadTexture(image,i++);
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/menu.bmp");
+    loadTexture(image,i++);
     
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 3.bmp");
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/pausa.bmp");
+    loadTexture(image,i++);
+//
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/instrucciones.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 4.bmp");
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover1.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 5.bmp");
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover2.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 6.bmp");
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover3.bmp");
+//    loadTexture(image,i++);
+//
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover4.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 7.bmp");
-//    loadTexture(image,i++);
-//    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 8.bmp");
-//    loadTexture(image,i++);
-//    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 9.bmp");
+//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover5.bmp");
 //    loadTexture(image,i++);
     
     delete image;
@@ -329,10 +329,10 @@ void display() {
         glVertex3f(0.0f, 0.0f, 0);
         
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(0.0f, screenWidth, 0);
+        glVertex3f(0.0f, screenHeight, 0);
         
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(screenWidth, screenWidth, 0);
+        glVertex3f(screenWidth, screenHeight, 0);
         glEnd();
         
         glDisable(GL_TEXTURE_2D);
@@ -494,6 +494,31 @@ void display() {
         glClearColor(0.8588235294, 0.3450980392, 0.1725490196,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        //Imagen
+        glPushMatrix();
+        glTranslated(0, screenHeight, -100);
+        glScaled(1, -1, 1);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBindTexture(GL_TEXTURE_2D, texName[1]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(screenWidth, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, screenHeight, 0);
+        
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(screenWidth, screenHeight, 0);
+        glEnd();
+        
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+        
+        /*
         //Title BKG
         //glColor3f(0,0,1);
         //glRectf(screenWidth * 0.23, screenHeight * 0.1,screenWidth * 0.75, screenHeight * 0.25);
@@ -510,16 +535,42 @@ void display() {
         glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
         //Help Button
         glRectf(screenWidth * 0.37, screenHeight * 0.57,screenWidth * 0.61, screenHeight * 0.65);
-        
+        */
         //Stop music
         sonido.PauseSound();
     } else if (gameStatus == PAUSED) {
         //Display Game Paused
+        //Imagen
+        glPushMatrix();
+        glTranslated(0, screenHeight, -100);
+        glScaled(1, -1, 1);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBindTexture(GL_TEXTURE_2D, texName[2]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(screenWidth, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, screenHeight, 0);
+        
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(screenWidth, screenHeight, 0);
+        glEnd();
+        
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+        
+        /*
         glColor3f(1,1,1);
         drawText("Pausa", (screenWidth/2) - 50, screenHeight * 0.5, 0.25);
         
         glColor3f(0.1803921569,0.862745098,0.6901960784);
         glRectf(screenWidth * 0.37, screenHeight * 0.44,screenWidth * 0.61, screenHeight * 0.52);
+        */
     } else if (gameStatus == WON) {
         //Display Game Won
         glColor3f(1,1,1);
