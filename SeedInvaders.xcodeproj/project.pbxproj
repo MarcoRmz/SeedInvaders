@@ -34,6 +34,8 @@
 		A93B3E731BFCECA50003A3A6 /* Lateralus.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Lateralus.wav; sourceTree = "<group>"; };
 		A93B3E751BFCF77F0003A3A6 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sound.cpp; sourceTree = "<group>"; };
 		A93B3E761BFCF77F0003A3A6 /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
+		A963FB971C03B63A009A8E00 /* imageloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageloader.h; sourceTree = "<group>"; };
+		A963FB981C03B87A009A8E00 /* Imagenes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Imagenes; sourceTree = "<group>"; };
 		A9FCC5481BD72D1D00FCC3DA /* SeedInvaders */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SeedInvaders; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9FCC54B1BD72D1D00FCC3DA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A9FCC5521BD72D2900FCC3DA /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -78,6 +80,8 @@
 		A9FCC54A1BD72D1D00FCC3DA /* SeedInvaders */ = {
 			isa = PBXGroup;
 			children = (
+				A963FB981C03B87A009A8E00 /* Imagenes */,
+				A963FB971C03B63A009A8E00 /* imageloader.h */,
 				A93B3E751BFCF77F0003A3A6 /* Sound.cpp */,
 				A93B3E761BFCF77F0003A3A6 /* Sound.h */,
 				A93B3E731BFCECA50003A3A6 /* Lateralus.wav */,

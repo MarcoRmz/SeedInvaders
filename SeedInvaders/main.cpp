@@ -11,11 +11,13 @@
 #include <utility>
 #include <string>
 #include "Sound.h"
+#include "imageloader.h"
 
 using namespace std;
 
 enum Status { STOPPED, STARTED, WON, LOST, PAUSED, INSTRUCTIONS };
 Status gameStatus = STOPPED;
+static GLuint texName[20];
 
 void drawText(string text,int x,int y, double size);
 
@@ -44,8 +46,86 @@ vector<Invader> invaders;
 vector<Invader> kills;
 vector<Invader> hits;
 
-//Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
-Sound sonido = Sound("/Users/Canales/Workspace/Learning/OpenGL/SeedInvaders/SeedInvaders/Lateralus.wav");
+Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
+//Sound sonido = Sound("/Users/Canales/Workspace/Learning/OpenGL/SeedInvaders/SeedInvaders/Lateralus.wav");
+
+//Makes the image into a texture, and returns the id of the texture
+void loadTexture(Image* image,int k)
+{
+    
+    glBindTexture(GL_TEXTURE_2D, texName[k]); //Tell OpenGL which texture to edit
+    
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    
+    //Map the image to the texture
+    
+    glTexImage2D(GL_TEXTURE_2D,                //Always GL_TEXTURE_2D
+                 0,                            //0 for now
+                 GL_RGB,                       //Format OpenGL uses for image
+                 image->width, image->height,  //Width and height
+                 0,                            //The border of the image
+                 GL_RGB, //GL_RGB, because pixels are stored in RGB format
+                 GL_UNSIGNED_BYTE, //GL_UNSIGNED_BYTE, because pixels are stored
+                 //as unsigned numbers
+                 image->pixels);               //The actual pixel data
+    
+}
+
+void initRendering()
+{
+    int i=0;
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_COLOR_MATERIAL);
+    
+    glGenTextures(20, texName); //Make room for our texture
+    Image* image;
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 2.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 1.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 3.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 4.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 5.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 6.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 7.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 8.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/imagen 9.bmp");
+    loadTexture(image,i++);
+    
+    delete image;
+}
+
+void handleResize(int w, int h)
+{
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, (float)w / (float)h, 1.0, 200.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0, 0, -6, 0, 0, 0, 0, 1, 0);
+    //glTranslatef(0.0f, 1.0f, -6.0f);
+}
 
 void  initLight(void) {
 
@@ -150,7 +230,7 @@ void myTimer(int i) {
         }
         
 
-        cout << powerupTime << endl;
+        //cout << powerupTime << endl;
         if(powerupStatus != 0){
            powerupTime--;
            if(powerupTime <= 0) {
@@ -227,41 +307,62 @@ void display() {
     
     glClearColor(0.9215686275, 0.5960784314, 0.4862745098,1.0);
     
-    float mat[4];
-    
-    //Dibuja Background
-    glEnable(GL_LIGHTING);
-    GLUquadricObj *background = gluNewQuadric();
-    glShadeModel (GL_SMOOTH);
-    glPushMatrix();
-    mat[0] = 1.0;
-    mat[1] = 0.4;
-    mat[2] = 0.4;
-    mat[3] = 1.0;
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
-    mat[0] = 0.4;
-    mat[1] = 0.4;
-    mat[2] = 0.4;
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
-    mat[0] = 0.0;
-    mat[1] = 0.0;
-    mat[2] = 0.774597;
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
-    glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
-    //Cylinder
-    glPushMatrix();
-    glTranslatef(screenWidth*0.5,  -screenWidth + bgLocation, 0);
-    glRotatef(260.0, 1.0, 0.0, 0.0);
-    gluQuadricDrawStyle(background, GLU_LINE);
-    gluCylinder(background, 370, 370, screenWidth*2.0, 100, 50);
-    glPopMatrix();
-    glPopMatrix();
-    glDisable(GL_LIGHTING);
-    
     //Matriz de materiales
+    float mat[4];
     
     if (gameStatus == STARTED) {
         //Display Game Screen
+        //Dibuja Background
+        glEnable(GL_LIGHTING);
+        GLUquadricObj *background = gluNewQuadric();
+        glShadeModel (GL_SMOOTH);
+        glPushMatrix();
+        mat[0] = 1.0;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.4;
+        mat[2] = 0.4;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.0;
+        mat[1] = 0.0;
+        mat[2] = 0.774597;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
+        //Cylinder
+        glPushMatrix();
+        glTranslatef(screenWidth*0.5,  -screenWidth + bgLocation, 0);
+        glRotatef(260.0, 1.0, 0.0, 0.0);
+        gluQuadricDrawStyle(background, GLU_LINE);
+        gluCylinder(background, 370, 370, screenWidth*2.0, 100, 50);
+        glPopMatrix();
+        glPopMatrix();
+        glDisable(GL_LIGHTING);
+        
+        /*
+        //ACTIVAR LA MATRIZ DE TEXTURAS
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glMatrixMode(GL_TEXTURE);
+        //Seleccionar la textura
+        glBindTexture(GL_TEXTURE_2D,texName[0]);
+        //coordenadas
+        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+        glEnable(GL_TEXTURE_GEN_S);
+        glEnable(GL_TEXTURE_GEN_T);
+        glPushMatrix();
+        //glTranslated(0,0,-2);
+        // Todas las transformaciones se acumulan sobre la
+        // matriz de texturas
+        // MIentras no se seleccione otra Matriz
+        glPopMatrix();
+        glDisable(GL_TEXTURE_GEN_S);
+        glDisable(GL_TEXTURE_GEN_T);
+        glDisable(GL_TEXTURE_2D);
+        */
         
         //Game Stats
         glColor3f(1, 1, 1);
@@ -795,4 +896,209 @@ int main(int argc, char *argv[]) {
     crearMenu();
     glutMainLoop();
     return EXIT_SUCCESS;
+}
+
+#include <assert.h>
+#include <fstream>
+
+#include "imageloader.h"
+
+using namespace std;
+
+Image::Image(char* ps, int w, int h) : pixels(ps), width(w), height(h)
+{
+    
+}
+
+Image::~Image()
+{
+    delete[] pixels;
+}
+
+namespace
+{
+    //Converts a four-character array to an integer, using little-endian form
+    int toInt(const char* bytes)
+    {
+        return (int)(((unsigned char)bytes[3] << 24) |
+                     ((unsigned char)bytes[2] << 16) |
+                     ((unsigned char)bytes[1] << 8) |
+                     (unsigned char)bytes[0]);
+    }
+    
+    //Converts a two-character array to a short, using little-endian form
+    short toShort(const char* bytes)
+    {
+        return (short)(((unsigned char)bytes[1] << 8) |
+                       (unsigned char)bytes[0]);
+    }
+    
+    //Reads the next four bytes as an integer, using little-endian form
+    int readInt(ifstream &input)
+    {
+        char buffer[4];
+        input.read(buffer, 4);
+        return toInt(buffer);
+    }
+    
+    //Reads the next two bytes as a short, using little-endian form
+    short readShort(ifstream &input)
+    {
+        char buffer[2];
+        input.read(buffer, 2);
+        return toShort(buffer);
+    }
+    
+    //Just like auto_ptr, but for arrays
+    template<class T>
+    class auto_array
+    {
+    private:
+        T* array;
+        mutable bool isReleased;
+    public:
+        explicit auto_array(T* array_ = NULL) :
+        array(array_), isReleased(false)
+        {
+        }
+        
+        auto_array(const auto_array<T> &aarray)
+        {
+            array = aarray.array;
+            isReleased = aarray.isReleased;
+            aarray.isReleased = true;
+        }
+        
+        ~auto_array()
+        {
+            if (!isReleased && array != NULL)
+            {
+                delete[] array;
+            }
+        }
+        
+        T* get() const
+        {
+            return array;
+        }
+        
+        T &operator*() const
+        {
+            return *array;
+        }
+        
+        void operator=(const auto_array<T> &aarray)
+        {
+            if (!isReleased && array != NULL)
+            {
+                delete[] array;
+            }
+            array = aarray.array;
+            isReleased = aarray.isReleased;
+            aarray.isReleased = true;
+        }
+        
+        T* operator->() const
+        {
+            return array;
+        }
+        
+        T* release()
+        {
+            isReleased = true;
+            return array;
+        }
+        
+        void reset(T* array_ = NULL)
+        {
+            if (!isReleased && array != NULL)
+            {
+                delete[] array;
+            }
+            array = array_;
+        }
+        
+        T* operator+(int i)
+        {
+            return array + i;
+        }
+        
+        T &operator[](int i)
+        {
+            return array[i];
+        }
+    };
+}
+
+Image* loadBMP(const char* filename)
+{
+    ifstream input;
+    input.open(filename, ifstream::binary);
+    assert(!input.fail() || !"Could not find file");
+    char buffer[2];
+    input.read(buffer, 2);
+    assert(buffer[0] == 'B' && buffer[1] == 'M' || !"Not a bitmap file");
+    input.ignore(8);
+    int dataOffset = readInt(input);
+    
+    //Read the header
+    int headerSize = readInt(input);
+    int width;
+    int height;
+    switch (headerSize)
+    {
+        case 40:
+            //V3
+            width = readInt(input);
+            height = readInt(input);
+            input.ignore(2);
+            assert(readShort(input) == 24 || !"Image is not 24 bits per pixel");
+            assert(readShort(input) == 0 || !"Image is compressed");
+            break;
+        case 12:
+            //OS/2 V1
+            width = readShort(input);
+            height = readShort(input);
+            input.ignore(2);
+            assert(readShort(input) == 24 || !"Image is not 24 bits per pixel");
+            break;
+        case 64:
+            //OS/2 V2
+            assert(!"Can't load OS/2 V2 bitmaps");
+            break;
+        case 108:
+            //Windows V4
+            assert(!"Can't load Windows V4 bitmaps");
+            break;
+        case 124:
+            //Windows V5
+            assert(!"Can't load Windows V5 bitmaps");
+            break;
+        default:
+            assert(!"Unknown bitmap format");
+    }
+    
+    //Read the data
+    int bytesPerRow = ((width * 3 + 3) / 4) * 4 - (width * 3 % 4);
+    int size = bytesPerRow * height;
+    auto_array<char> pixels(new char[size]);
+    input.seekg(dataOffset, ios_base::beg);
+    input.read(pixels.get(), size);
+    
+    //Get the data into the right format
+    auto_array<char> pixels2(new char[width * height * 3]);
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+                pixels2[3 * (width * y + x) + c] =
+                pixels[bytesPerRow * y + 3 * x + (2 - c)];
+            }
+        }
+    }
+    
+    input.close();
+    return new Image(pixels2.release(), width, height);
 }
