@@ -49,11 +49,21 @@ class Invader {
             case 10:
                 text = "RAPIDEZ";
                 //0.3, 0.3, 1.0
-                rgb = Color(0.1803921569,0.862745098,0.6901960784);
+                rgb = Color(0.35,0.0,0.0);
+                break;
+            case 9:
+                text = "+VIDA";
+                //0.3, 0.3, 1.0
+                rgb = Color(0.0,0.25,0.05);
+                break;
+            case 8:
+                text = "GRANDE";
+                //0.3, 0.3, 1.0
+                rgb = Color(0.4,0.4,0.4);
                 break;
             default:
                 text = "+10";
-                rgb = Color(0.2196078431,0.5176470588,1);
+                rgb = Color(0.0,0.05,0.15);
                 break;
         }
         
@@ -70,6 +80,20 @@ class Invader {
     
     void paint(){
         GLUquadricObj *invader = gluNewQuadric();
+        mat[0] = rgb.r;
+        mat[1] = rgb.g;
+        mat[2] = rgb.b;
+        mat[3] = 1.0;
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+        mat[0] = 0.4;
+        mat[1] = 0.5;
+        mat[2] = 0.5;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+        mat[0] = 0.04;
+        mat[1] = 0.7;
+        mat[2] = 0.7;
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+        glMaterialf(GL_FRONT, GL_SHININESS, .25 * 128.0);
         glColor3f(rgb.r, rgb.g, rgb.b);
         glShadeModel (GL_SMOOTH);
         //Invader Rotation
@@ -84,6 +108,12 @@ class Invader {
             case 10:
                 scale = 2.0;
                 break;
+            case 9:
+                scale = 1.5;
+                break;
+            case 8:
+                scale = 0.5;
+                break;
             default:
                 scale = 1.0;
                 break;
@@ -91,7 +121,7 @@ class Invader {
         glPushMatrix();
         
         glPushMatrix();
-        if(type!=10){
+        if(type!=10 && type != 9 && type != 8){
 
             glTranslatef(invaderX-3.5*scale, invaderHeight + 5, -50.0);
             glRotatef(angle, 0.0, -0.99, 0.0);
@@ -111,14 +141,14 @@ class Invader {
         
         }
         glTranslatef(invaderX-3, invaderHeight + 50, -50.0);
-        if(type == 10){
+        if(type == 10 || type == 9 || type == 8){
             glRotatef(-angle-10, 0.5, 1.0, 0.0);
             gluQuadricDrawStyle(invader, GLU_LINE);
             gluSphere(invader, 10*scale, 8*scale, 8*scale);
         }
         glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(invader, GLU_FILL);
-        if(type == 10)
+        if(type == 10 || type == 9 || type == 8)
             gluSphere(invader, 5*scale, 5*scale, 4*scale);
         else
             gluSphere(invader, 10*scale, 5*scale, 4*scale);
