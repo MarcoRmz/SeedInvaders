@@ -107,21 +107,21 @@ void initRendering()
 
     image = loadBMP("/Imagenes/instrucciones.bmp");
     loadTexture(image,i++);
-//
-//    image = loadBMP("/Imagenes/gameover1.bmp");
-//    loadTexture(image,i++);
-//    
-//    image = loadBMP("/Imagenes/gameover2.bmp");
-//    loadTexture(image,i++);
-//    
-//    image = loadBMP("/Imagenes/gameover3.bmp");
-//    loadTexture(image,i++);
-//
-//    image = loadBMP("/Imagenes/gameover4.bmp");
-//    loadTexture(image,i++);
-//    
-//    image = loadBMP("/Imagenes/gameover5.bmp");
-//    loadTexture(image,i++);
+
+    image = loadBMP("/Imagenes/go1.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Imagenes/go2.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Imagenes/go3.bmp");
+    loadTexture(image,i++);
+
+    image = loadBMP("/Imagenes/go4.bmp");
+    loadTexture(image,i++);
+    
+    image = loadBMP("/Imagenes/go5.bmp");
+    loadTexture(image,i++);
     
     delete image;
 }
@@ -595,11 +595,35 @@ void display() {
         sonido.PauseSound();
     } else if (gameStatus == LOST) {
         //Display Game Lost
-        glColor3f(1,1,1);
-        drawText("Perdiste! LLegaste al nivel: " + to_string(levels) + " con: " + to_string(score) + " puntos y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.14, screenHeight * 0.5, 0.12);
+        //Imagen
+        glPushMatrix();
+        glTranslated(0, screenHeight, -100);
+        glScaled(1, -1, 1);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBindTexture(GL_TEXTURE_2D, texName[8]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(screenWidth, 0.0f, 0);
         
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0);
+        
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(0.0f, screenHeight, 0);
+        
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(screenWidth, screenHeight, 0);
+        glEnd();
+        
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+
         glColor3f(1,0,0);
-        glRectf(screenWidth * 0.12, screenHeight * 0.45,screenWidth * 0.92, screenHeight * 0.52);
+        drawText("LLegaste al nivel: " + to_string(levels) + " con: " + to_string(score) + " puntos y duraste " + minutesStr + ":" + secondsStr + "." + milisecondsStr + "!", screenWidth * 0.185, screenHeight * 0.25, 0.12);
+        
+        glColor3f(1,1,1);
+        glRectf(screenWidth * 0.12, screenHeight * 0.2,screenWidth * 0.88, screenHeight * 0.27);
         
         //Stop music
         sonido.PauseSound();
