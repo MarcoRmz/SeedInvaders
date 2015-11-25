@@ -20,6 +20,9 @@ enum Status { STOPPED, STARTED, WON, LOST, PAUSED, INSTRUCTIONS };
 Status gameStatus = STOPPED;
 static GLuint texName[9];
 
+float mat[4];
+
+
 void drawText(string text,int x,int y, double size);
 
 int screenWidth = 720, screenHeight = 640, gameZoneHeight = screenHeight * 0.9, textZoneHeight = screenHeight * 0.9;
@@ -36,8 +39,13 @@ int powerupTime = 0;
 int levelCounter = 1;
 string powerupTitle = "";
 
+int imageTip = 5;
+
 long long timerMS = 0;
 double playerPositionX = screenWidth/2.0;
+
+int playerTop = 28;
+
 bool playerLeft = false, playerRight = false;
 string minutesStr, secondsStr, milisecondsStr;
 
@@ -262,13 +270,20 @@ void myTimer(int i) {
             invaders[i].invaderHeight += invaders[i].speed;
             
             // KILL INVADER
-            if(invaders[i].invaderHeight >= textZoneHeight-150 && playerPositionX-35 <= invaders[i].invaderX && invaders[i].invaderX <= playerPositionX+35){
+            if(invaders[i].invaderHeight >= textZoneHeight-150 && playerPositionX-7-playerTop <= invaders[i].invaderX && invaders[i].invaderX <= playerPositionX+7+playerTop){
                 kills.push_back(invaders[i]);
                 if(invaders[i].type == 10){
                     powerupStatus = 1;
                     powerupTime = 500;
                     powerupTitle = "Rapidez";
+                } else if(invaders[i].type == 9){
+                    lives++;
+                } else if(invaders[i].type == 8){
+                    powerupStatus = 2;
+                    powerupTime = 500;
+                    powerupTitle = "Grande";
                 }
+                
                 invaders.erase(invaders.begin()+i);
                 score += 10;
 
@@ -277,15 +292,16 @@ void myTimer(int i) {
             // HIT PLAYER
             if (invaders[i].invaderHeight >= textZoneHeight-65) {
                 hits.push_back(invaders[i]);
-                if (invaders[i].type != 10) {
+                if (invaders[i].type != 10 && invaders[i].type != 9 && invaders[i].type != 8) {
                     lives--;
                 }
                 invaders.erase(invaders.begin()+i);
             }
         }
         
-        if (lives <= 0) {
+        if (lives <= 0 && gameStatus != LOST) {
             gameStatus = LOST;
+            imageTip = rand() % (9) + 5;
         }
         
         if(timerMS % 20 == 0) timer += 1;
@@ -320,7 +336,6 @@ void display() {
     glClearColor(0.9215686275, 0.5960784314, 0.4862745098,1.0);
     
     //Matriz de materiales
-    float mat[4];
     
     if (gameStatus == STARTED) {
         //Display Game Screen
@@ -328,7 +343,7 @@ void display() {
         //Dibuja Background
         //Imagen
         glPushMatrix();
-        glTranslated(0, screenHeight, -100);
+        glTranslated(0, screenHeight + bgLocation, -100);
         glScaled(1, -1, 1);
         glEnable(GL_TEXTURE_2D);
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -341,45 +356,14 @@ void display() {
         glVertex3f(0.0f, 0.0f, 0);
         
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(0.0f, screenHeight, 0);
+        glVertex3f(0.0f, screenHeight*2.0, 0);
         
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(screenWidth, screenHeight, 0);
+        glVertex3f(screenWidth, screenHeight*2.0, 0);
         glEnd();
         
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
-        
-        //Objeto
-        /*
-        glEnable(GL_LIGHTING);
-        GLUquadricObj *background = gluNewQuadric();
-        glShadeModel (GL_SMOOTH);
-        glPushMatrix();
-        mat[0] = 1.0;
-        mat[1] = 0.4;
-        mat[2] = 0.4;
-        mat[3] = 1.0;
-        glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
-        mat[0] = 0.4;
-        mat[1] = 0.4;
-        mat[2] = 0.4;
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
-        mat[0] = 0.0;
-        mat[1] = 0.0;
-        mat[2] = 0.774597;
-        glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
-        glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
-        //Cylinder
-        glPushMatrix();
-        glTranslatef(screenWidth*0.5,  -screenWidth + bgLocation, 0);
-        glRotatef(260.0, 1.0, 0.0, 0.0);
-        gluQuadricDrawStyle(background, GLU_LINE);
-        gluCylinder(background, 370, 370, screenWidth*2.0, 100, 50);
-        glPopMatrix();
-        glPopMatrix();
-        glDisable(GL_LIGHTING);
-        */
         
         //Game Stats
         glColor3f(1, 1, 1);
@@ -418,44 +402,16 @@ void display() {
         //Dibuja Invader
         glEnable(GL_LIGHTING);
         for(int i = 0; i < invaders.size(); i++){
-            if (invaders[i].type != 10) {
-                mat[0] = 0.0;
-                mat[1] = 0.05;
-                mat[2] = 0.15;
-                mat[3] = 1.0;
-                glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
-                mat[0] = 0.4;
-                mat[1] = 0.5;
-                mat[2] = 0.5;
-                glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
-                mat[0] = 0.04;
-                mat[1] = 0.7;
-                mat[2] = 0.7;
-                glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
-                glMaterialf(GL_FRONT, GL_SHININESS, .25 * 128.0);
-            } else {
-                mat[0] = 0.35;
-                mat[1] = 0.0;
-                mat[2] = 0.0;
-                mat[3] = 1.0;
-                glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
-                mat[0] = 0.4;
-                mat[1] = 0.5;
-                mat[2] = 0.5;
-                glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
-                mat[0] = 0.04;
-                mat[1] = 0.7;
-                mat[2] = 0.7;
-                glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
-                glMaterialf(GL_FRONT, GL_SHININESS, .15 * 128.0);
-            }
             invaders[i].paint();
         }
         glDisable(GL_LIGHTING);
         
         double speedMeter = 1.0;
+        playerTop = 28;
         if(powerupStatus == 1){
             speedMeter = 1.5;
+        } else if(powerupStatus == 2){
+            playerTop = 70;
         }
         
         if(playerLeft && playerPositionX > 0) {
@@ -486,17 +442,17 @@ void display() {
         glMaterialf(GL_FRONT, GL_SHININESS, 0.8 * 128.0);
         //Sphere
         glPushMatrix();
-        glTranslatef(playerPositionX, screenHeight * 0.85, -60.0);
+        glTranslatef(playerPositionX, screenHeight * 0.85, -40.0);
         glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(hero, GLU_FILL);
         gluSphere(hero, 21, 14, 4);
         glPopMatrix();
         //Cylinder
         glPushMatrix();
-        glTranslatef(playerPositionX, screenHeight * 0.75, -50.0);
+        glTranslatef(playerPositionX, screenHeight * 0.75, -30.0);
         glRotatef(260.0, 1.0, 0.0, 0.0);
         gluQuadricDrawStyle(hero, GLU_FILL);
-        gluCylinder(hero, 28, 17, 63, 14, 4);
+        gluCylinder(hero, playerTop, 17, 63, 14, 4);
         glPopMatrix();
         glPopMatrix();
         glDisable(GL_LIGHTING);
@@ -601,7 +557,7 @@ void display() {
         glScaled(1, -1, 1);
         glEnable(GL_TEXTURE_2D);
         glColor3f(1.0f, 1.0f, 1.0f);
-        glBindTexture(GL_TEXTURE_2D, texName[8]);
+        glBindTexture(GL_TEXTURE_2D, texName[imageTip]);
         glBegin(GL_QUADS);
         glTexCoord2f(1.0f, 0.0f);
         glVertex3f(screenWidth, 0.0f, 0);
