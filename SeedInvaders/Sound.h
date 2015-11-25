@@ -31,7 +31,8 @@ struct WAVE_Data {
 
 class Sound {
 public:
-    Sound(char*  filePath);
+    Sound(string filePath, char *fileName);
+    Sound(char *fileName);
     void PlaySound();
     void PauseSound();
     ~Sound();

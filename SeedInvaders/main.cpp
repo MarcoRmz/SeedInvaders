@@ -1,5 +1,6 @@
 //
 //  Created by Marco Ramirez and Ricardo Canales on 10/18/15.
+//  Game Seed Invaders
 //
 
 #include <iostream>
@@ -46,8 +47,19 @@ vector<Invader> invaders;
 vector<Invader> kills;
 vector<Invader> hits;
 
-Sound sonido = Sound("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Lateralus.wav");
-//Sound sonido = Sound("/Users/Canales/Workspace/Learning/OpenGL/SeedInvaders/SeedInvaders/Lateralus.wav");
+//Directory Path
+string fullPath = __FILE__;
+
+//Sound load
+Sound sonido = Sound(fullPath, "Lateralus.wav");
+
+
+//Gets Directory Path
+void getParentPath(){
+    for (int i = fullPath.length() - 1; i>=0 && fullPath[i] != '/'; i--) {
+        fullPath.erase(i, 1);
+    }
+}
 
 //Makes the image into a texture, and returns the id of the texture
 void loadTexture(Image* image,int k)
@@ -84,31 +96,31 @@ void initRendering()
     glGenTextures(9, texName); //Make room for our texture
     Image* image;
     
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/bkg1.bmp");
+    image = loadBMP("/Imagenes/bkg1.bmp");
     loadTexture(image,i++);
     
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/menu.bmp");
+    image = loadBMP("/Imagenes/menu.bmp");
     loadTexture(image,i++);
     
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/pausa.bmp");
+    image = loadBMP("/Imagenes/pausa.bmp");
     loadTexture(image,i++);
 
-    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/instrucciones.bmp");
+    image = loadBMP("/Imagenes/instrucciones.bmp");
     loadTexture(image,i++);
 //
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover1.bmp");
+//    image = loadBMP("/Imagenes/gameover1.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover2.bmp");
+//    image = loadBMP("/Imagenes/gameover2.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover3.bmp");
+//    image = loadBMP("/Imagenes/gameover3.bmp");
 //    loadTexture(image,i++);
 //
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover4.bmp");
+//    image = loadBMP("/Imagenes/gameover4.bmp");
 //    loadTexture(image,i++);
 //    
-//    image = loadBMP("/Users/Marco/Documents/Code/Graficas/SeedInvaders/SeedInvaders/Imagenes/gameover5.bmp");
+//    image = loadBMP("/Imagenes/gameover5.bmp");
 //    loadTexture(image,i++);
     
     delete image;
@@ -1134,6 +1146,7 @@ void myKeyboardUp(unsigned char theKey, int mouseX, int mouseY) {
 }
 
 int main(int argc, char *argv[]) {
+    getParentPath();
     srand(time(0));
     glutInit(&argc, argv);
     glutInitWindowSize(screenWidth,screenHeight);
@@ -1291,7 +1304,7 @@ namespace
 Image* loadBMP(const char* filename)
 {
     ifstream input;
-    input.open(filename, ifstream::binary);
+    input.open(fullPath + filename, ifstream::binary);
     assert(!input.fail() || !"Could not find file");
     char buffer[2];
     input.read(buffer, 2);
