@@ -409,7 +409,7 @@ void display() {
                 if (timer/15 > 10) {
                     hits[i].paintText("SIDA");
                 } else {
-                    hits[i].paintText("PREGNANT");
+                    hits[i].paintText("EMBARAZADA");
                 }
                 
             }
